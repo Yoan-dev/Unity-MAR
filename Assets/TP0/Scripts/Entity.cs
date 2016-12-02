@@ -7,14 +7,7 @@ public class Entity : MonoBehaviour {
 
 	private bool rotate;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyUp(KeyCode.R)) rotate = !rotate;
 		if (rotate) transform.Rotate(new Vector3(-0.75f, 0, 0));
 	}
 
@@ -24,7 +17,11 @@ public class Entity : MonoBehaviour {
 	}
 
 	private void ShadowOnOff (GameObject obj, bool value) {
-		gameObject.GetComponent<MeshRenderer> ().receiveShadows = value;
-			
+		obj.GetComponent<MeshRenderer> ().receiveShadows = value;
+
+	}
+
+	public void RotationOnOff (bool value) {
+		rotate = value;
 	}
 }
