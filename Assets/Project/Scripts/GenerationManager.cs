@@ -28,7 +28,7 @@ public class GenerationManager : MonoBehaviour {
 	private void Generate () {
 		road = GenerateRoad ();
 		heights = GenerateHeights ();
-		terrainData.SetHeights (0, 0, GenerateTerrain (road, heights));
+		terrainData.SetHeights (0, 0, GenerateTerrain ());
 	}
 
 	private bool[,] GenerateRoad () {
@@ -55,8 +55,17 @@ public class GenerationManager : MonoBehaviour {
 		return res;
 	}
 
-	private float[,] GenerateTerrain (bool[,] road, float[,] heights) {
-		return null;
+	private float[,] GenerateTerrain () {
+		float[,] res = new float[(int)terrainData.size.x, (int)terrainData.size.z];
+		for (int i = 0; i < res.GetLength (0); i++) {
+			for (int j = 0; j < res.GetLength (1); j++) {
+				if (road [i, j])
+					res [i, j] = Mathf.Max (0, heights [i, j] - 0.1f);
+				else
+					res [i, j] = heights [i, j];
+			}
+		}
+		return res;
 	}
 
 	void OnDrawGizmos()
