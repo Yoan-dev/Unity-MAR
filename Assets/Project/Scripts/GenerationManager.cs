@@ -6,7 +6,8 @@ public class GenerationManager : MonoBehaviour {
 	public Terrain terrain;
 
 	//[Range(1, 100)]
-	public int range;
+	public int maxMoutain;
+	public int maxRadiusMoutain;
 
 	private TerrainData terrainData;
 
@@ -54,12 +55,12 @@ public class GenerationManager : MonoBehaviour {
 
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, j] = 0.5f;
+				res [i, j] = 0.0f;
 			}
 		}
 
 		// Nombre de montagnes
-		int nbMount = range;//Random.Range (2, 5);
+		int nbMount = maxMoutain;//Random.Range (2, 5);
 
 		// Hauteur de chaque montagne
 		float[,] mounts = new float[nbMount, 3];
@@ -72,10 +73,12 @@ public class GenerationManager : MonoBehaviour {
 			bool ok = true;
 			int x;
 			int z;
+			int radius;
 
 			do {
 				x = (int) Random.Range (0, terrainData.size.x - 1);
 				z = (int) Random.Range (0, terrainData.size.z - 1);
+				radius = (int) Random.Range (0, maxRadiusMoutain);
 
 				if (i == 0)
 					ok = false;
@@ -83,16 +86,25 @@ public class GenerationManager : MonoBehaviour {
 				// Verification proximite avec montagnes precedentes
 				for (int j = 0; j < i; j++) {
 					float dist = Mathf.Sqrt (Mathf.Pow ((mounts [j, 1] - mounts [i, 1]), 2) + Mathf.Pow ((mounts [j, 2] - mounts [i, 2]), 2));
-					float distMin = 5.0f;
+					float distMin = radius*0.5f;
 					if(dist >= distMin)
 						ok = false;
 				}
 			} while (ok);
 				
-			// Mise a jour dans la matrice res
+			// Mise a jour dans la matrice res du pic central des montagnes
 			mounts [i, 1] = x;
 			mounts [i, 2] = z;
 			res [x, z] = mounts [i, 0];
+
+			// Mise a jour dans la matrice res de la base de la montagne sur le sol
+
+			// ------/\ Gerer out of range avec +/- radius
+			for (int baseX = (x - radius); baseX <= (x + radius); baseX++) {
+				for (int baseZ = (z - radius); baseZ <= (z + radius); baseZ++) {
+					res [baseX, baseZ] = mounts [i, 0];
+				}
+			}
 		}
 
 		return res;
