@@ -47,6 +47,38 @@ public class GenerationManager : MonoBehaviour {
 
 	private float[,] GenerateHeights () {
 		float[,] res = new float[(int)terrainData.size.x, (int)terrainData.size.z];
+
+		// Nombre de montagnes
+		int nbMount = Random.Range (2, 5);
+
+		// Hauteur de chaque montagne
+		float[,] mounts = new float[nbMount, 3];
+		for (int i = 0; i < mounts.getLength (0); i++) {
+			mounts [i,0] = Random.Range (0.5f, 1.0f);
+		}
+
+		// Position sur le terrain de chaque montagne
+		for (int i = 0; i < mounts.getLength (0); i++) {
+			do {
+				bool ok = true;
+				int x = Random.Range (0, terrainData.size.x - 1);
+				int z = Random.Range (0, terrainData.size.z - 1);
+
+				// Verification proximite avec montagnes precedentes
+				for (int j = 0; j < i; j++) {
+					int dist = Mathf.Sqrt ();
+					int distMin = Mathf.Abs();
+					if(dist >= distMin)
+						ok = false;
+				}
+
+				mounts [i, 1] = x;
+				mounts [i, 2] = z;
+
+			} while (true);
+
+		}
+
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
 				res [i, j] = 0.5f;
