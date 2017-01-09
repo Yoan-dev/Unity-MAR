@@ -4,6 +4,10 @@ using System.Collections;
 public class GenerationManager : MonoBehaviour {
 
 	public Terrain terrain;
+
+	//[Range(1, 100)]
+	public int range;
+
 	private TerrainData terrainData;
 
 	// Use this for initialization
@@ -48,42 +52,49 @@ public class GenerationManager : MonoBehaviour {
 	private float[,] GenerateHeights () {
 		float[,] res = new float[(int)terrainData.size.x, (int)terrainData.size.z];
 
-		// Nombre de montagnes
-		int nbMount = Random.Range (2, 5);
-
-		// Hauteur de chaque montagne
-		float[,] mounts = new float[nbMount, 3];
-		for (int i = 0; i < mounts.getLength (0); i++) {
-			mounts [i,0] = Random.Range (0.5f, 1.0f);
-		}
-
-		// Position sur le terrain de chaque montagne
-		for (int i = 0; i < mounts.getLength (0); i++) {
-			do {
-				bool ok = true;
-				int x = Random.Range (0, terrainData.size.x - 1);
-				int z = Random.Range (0, terrainData.size.z - 1);
-
-				// Verification proximite avec montagnes precedentes
-				for (int j = 0; j < i; j++) {
-					int dist = Mathf.Sqrt ();
-					int distMin = Mathf.Abs();
-					if(dist >= distMin)
-						ok = false;
-				}
-
-				mounts [i, 1] = x;
-				mounts [i, 2] = z;
-
-			} while (true);
-
-		}
-
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
 				res [i, j] = 0.5f;
 			}
 		}
+
+		// Nombre de montagnes
+		int nbMount = range;//Random.Range (2, 5);
+
+		// Hauteur de chaque montagne
+		float[,] mounts = new float[nbMount, 3];
+		for (int i = 0; i < mounts.GetLength (0); i++) {
+			mounts [i,0] = Random.Range (0.5f, 1.0f);
+		}
+
+		// Position sur le terrain de chaque montagne
+		for (int i = 0; i < mounts.GetLength (0); i++) {
+			bool ok = true;
+			int x;
+			int z;
+
+			do {
+				x = (int) Random.Range (0, terrainData.size.x - 1);
+				z = (int) Random.Range (0, terrainData.size.z - 1);
+
+				if (i == 0)
+					ok = false;
+
+				// Verification proximite avec montagnes precedentes
+				for (int j = 0; j < i; j++) {
+					float dist = Mathf.Sqrt (Mathf.Pow ((mounts [j, 1] - mounts [i, 1]), 2) + Mathf.Pow ((mounts [j, 2] - mounts [i, 2]), 2));
+					float distMin = 5.0f;
+					if(dist >= distMin)
+						ok = false;
+				}
+			} while (ok);
+				
+			// Mise a jour dans la matrice res
+			mounts [i, 1] = x;
+			mounts [i, 2] = z;
+			res [x, z] = mounts [i, 0];
+		}
+
 		return res;
 	}
 
