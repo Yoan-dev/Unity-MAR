@@ -60,7 +60,7 @@ public class GenerationManager : MonoBehaviour {
 		}
 
 		// Nombre de montagnes
-		int nbMount = maxMoutain;//Random.Range (2, 5);
+		int nbMount = Random.Range (2, maxMoutain);
 
 		// Hauteur de chaque montagne
 		float[,] mounts = new float[nbMount, 3];
@@ -78,7 +78,7 @@ public class GenerationManager : MonoBehaviour {
 			do {
 				x = (int) Random.Range (0, terrainData.size.x - 1);
 				z = (int) Random.Range (0, terrainData.size.z - 1);
-				radius = (int) Random.Range (0, maxRadiusMoutain);
+				radius = (int) Random.Range (10, maxRadiusMoutain);
 
 				if (i == 0)
 					ok = false;
@@ -98,11 +98,10 @@ public class GenerationManager : MonoBehaviour {
 			res [x, z] = mounts [i, 0];
 
 			// Mise a jour dans la matrice res de la base de la montagne sur le sol
-
-			// ------/\ Gerer out of range avec +/- radius
-			for (int baseX = (x - radius); baseX <= (x + radius); baseX++) {
-				for (int baseZ = (z - radius); baseZ <= (z + radius); baseZ++) {
-					res [baseX, baseZ] = mounts [i, 0];
+			for (int baseX = Mathf.Max (0, (x - radius)); baseX <= Mathf.Min (terrainData.size.x - 1, (x + radius)); baseX++) {
+				for (int baseZ = Mathf.Max (0, (z - radius)); baseZ <= Mathf.Min (terrainData.size.z - 1, (z + radius)); baseZ++) {
+					if((Mathf.Pow ((baseX - x), 2) + Mathf.Pow ((baseZ - z), 2)) <= Mathf.Pow(radius, 2))
+						res [baseX, baseZ] = Mathf.Max(res [baseX, baseZ], mounts [i, 0]);
 				}
 			}
 		}
