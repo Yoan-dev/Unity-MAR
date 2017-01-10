@@ -41,7 +41,7 @@ public class GenerationManager : MonoBehaviour {
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
 				if (
-					((i < 40 || i > terrainData.size.x - 40) || (j < 40 || j > terrainData.size.z - 40)) &&
+					((i < 50 || i > terrainData.size.x - 50) || (j < 50 || j > terrainData.size.z - 50)) &&
 					(i > 30 && i < terrainData.size.x - 30 && j > 30 && j < terrainData.size.z - 30))
 					res [i, j] = true;
 				else res [i, j] = false;
@@ -55,7 +55,7 @@ public class GenerationManager : MonoBehaviour {
 
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, j] = 0.0f;
+				res [i, j] = 0.3f;
 			}
 		}
 
@@ -111,15 +111,43 @@ public class GenerationManager : MonoBehaviour {
 
 	private float[,] GenerateTerrain () {
 		float[,] res = new float[(int)terrainData.size.x, (int)terrainData.size.z];
+
+		for (int i = 0; i < res.GetLength (0); i++) {
+			for (int j = 0; j < res.GetLength (1); j++) {
+				res [i, j] = heights [i, j];
+			}
+		}
+
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
 				if (road [i, j])
-					res [i, j] = Mathf.Max (0, heights [i, j] - 0.1f);
-				else
-					res [i, j] = heights [i, j];
+					res = PlaceRoad (i, j, 5, 0.075f, res);
+			}
+		}
+
+		return res;
+	}
+
+	private float[,] PlaceRoad (int x, int y, int range, float depth, float[,] res) {
+		float maxRange = Distance (x, y, x + range, y + range);
+		for (int i = Mathf.Max(0, x - range); i < Mathf.Min(res.GetLength(0) - 1, x + range + 1); i++) {
+			for (int j = Mathf.Max(0, y - range); j < Mathf.Min(res.GetLength(1) - 1, y + range + 1); j++) {
+				if (road [i, j])
+					res [i, j] = heights [i, j] - depth;
+				else {
+					float dist = Distance (x, y, i, j);
+					res [i, j] = Mathf.Min (
+						res [i, j],
+						heights [i, j] - depth * (maxRange - dist) / maxRange
+					);
+				}
 			}
 		}
 		return res;
+	}
+
+	private float Distance (int x1, int y1, int x2, int y2) {
+		return Mathf.Sqrt (Mathf.Pow (x1 - x2, 2) + Mathf.Pow (y1 - y2, 2));
 	}
 
 	void OnDrawGizmos()
@@ -141,53 +169,4 @@ public class GenerationManager : MonoBehaviour {
 			}
 		}
 	}
-
-	/*
-
-	private IList<Vector2> outerRoads = new List<Vector2>();
-	private IList<Vector2> innerRoads = new List<Vector2>();
-
-	private bool[,] GenerateRoad () {
-		bool[,] res = new bool[(int)terrainData.size.x, (int)terrainData.size.z];
-		for (int i = 0; i < res.GetLength (0); i++) {
-			for (int j = 0; j < res.GetLength (1); j++) {
-				if (
-					((i < 40 || i > terrainData.size.x - 40) || (j < 40 || j > terrainData.size.z - 40)) &&
-					(i > 30 && i < terrainData.size.x - 30 && j > 30 && j < terrainData.size.z - 30)) {
-					res [i, j] = true;
-					if ((i == 39 || i == terrainData.size.x - 41) || (j == 39 || j == terrainData.size.z - 41) &&
-					    (i > 30 && i < terrainData.size.x - 30 && j > 30 && j < terrainData.size.z - 30))
-						outerRoads.Add (new Vector2 (i, j));
-					else
-						innerRoads.Add (new Vector2 (i, j));
-				}
-				else res [i, j] = false;
-			}
-		}
-		return res;
-	}
-
-	private float[,] GenerateHeights (bool[,] road) {
-		float[,] res = new float[(int)terrainData.size.x, (int)terrainData.size.z];
-		for (int i = 0; i < res.GetLength (0); i++) {
-			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, j] = Mathf.Min(ClosestRoad (i, j) / 320.0f, 1.0f);
-			}
-		}
-		return res;
-	}
-
-	private float ClosestRoad (int x, int y) {
-		if (VectorIn(x, y, innerRoads)) return 0;
-		return res;
-	}
-
-	private bool VectorIn (int x, int y, IList<Vector2> list) {
-		foreach (Vector2 vector in list)
-			if (vector.x == x && vector.y == y)
-				return true;
-			else
-				return false;
-	}
-	*/
 }
