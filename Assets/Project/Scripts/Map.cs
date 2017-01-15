@@ -9,8 +9,8 @@ public class Map {
 
 	#region Metrics;
 
-	private int minElevations = 2;
-	private int maxElevations = 100;
+	private int minElevations = 1;
+	private int maxElevations = 1;
 	private float baseElevation = 0.3f;
 	private float minElevationHeight = 0.2f;
 	private float maxElevationHeight = 0.7f;
@@ -127,15 +127,68 @@ public class Map {
 
 		float[,] heights = GetHeights ();
 		foreach (Elevation elevation in elevations) {
+			float[] coeffX;
+			coeffX = CalculationPolynom (Mathf.Max (0, (elevation.X - elevation.Radius)), Mathf.Min (cells.GetLength(0) - 1, (elevation.X + elevation.Radius)), elevation.X, heights [elevation.X, elevation.Y]);
 			// Mise a jour dans la matrice res de la base de la montagne sur le sol
 			for (int baseX = Mathf.Max (0, (elevation.X - elevation.Radius)); baseX <= Mathf.Min (cells.GetLength(0) - 1, (elevation.X + elevation.Radius)); baseX++) {
+				int[] solutionZ = {-1,-1};
+				bool firstTime = true;
 				for (int baseZ = Mathf.Max (0, (elevation.Y - elevation.Radius)); baseZ <= Mathf.Min (cells.GetLength(1) - 1, (elevation.Y + elevation.Radius)); baseZ++) {
-					if(Distance(baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius)
-						cells[baseX, baseZ].Height = Mathf.Max(cells[baseX, baseZ].Height, heights[baseX, baseZ] + /**/elevation.Height/**/);
+					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
+						// Dessin du cylindre
+						//cells [baseX, baseZ].Height = Mathf.Max (cells [baseX, baseZ].Height, heights [baseX, baseZ] + /**/elevation.Height/**/);
+						if (firstTime) {
+							firstTime = false;
+							solutionZ [0] = baseZ;
+						} else {
+							solutionZ[1] = baseZ;
+						}
+					}
+				}
+				for (int baseZ = Mathf.Max (0, (elevation.Y - elevation.Radius)); baseZ <= Mathf.Min (cells.GetLength (1) - 1, (elevation.Y + elevation.Radius)); baseZ++) {
+					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
+						float[] coeffZ;
+						coeffZ = CalculationPolynom (solutionZ [0], solutionZ [1], elevation.Y, DrawPolynom (coeffX [0], coeffX [1], coeffX [2], baseX));
+						cells [baseX, baseZ].Height = Mathf.Max (cells [baseX, baseZ].Height, heights [baseX, baseZ] + DrawPolynom (coeffZ[0], coeffZ[1], coeffZ[2], baseZ));
+				
+					}
 				}
 			}
 		}
 	}
+
+	private float[] CalculationPolynom (float r1, float r2, float z, float y) {
+		float a = 0f;
+		float b = 0f;
+		float c = 0f;
+		/*Debug.Log ("r1 " + r1);
+		Debug.Log ("r2 " + r2);
+		Debug.Log ("z " + z);*/
+		Debug.Log ("y " + y);
+		if (r2 != -1) {
+			float tmp = (z - r1) * (z - r2);
+			a = y / tmp;
+			b = (-2 * y * z) / tmp;
+			c = y + a * Mathf.Pow (z, 2);
+		}
+
+		/*Debug.Log ("a " + a);
+		Debug.Log ("b " + b);
+		Debug.Log ("c " + c);*/
+		float[] res = { a, b, c };
+
+		return res;
+	}
+
+	private float DrawPolynom(float a, float b, float c, int x) {
+		return a * Mathf.Pow (x, 2) + b * x + c;
+	}
+
+	/*private bool Delta(int a, int b, int c) {
+		if (Mathf.Pow (b, 2) - (4 * a * c) > 0) {
+			return true;
+		}
+	}*/
 
 	private void GenerateRoad() {
 		for (int i = 0; i < cells.GetLength (0); i++) {
