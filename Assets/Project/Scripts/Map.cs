@@ -232,7 +232,7 @@ public class Map {
                     cells[i, j].Height = heights[i, j] - depth;
                 }
 				else {
-                    cells[i, j].Texture = Texture.GRAVEL;
+                    cells[i, j].Texture = Texture.GROUND;
                     float dist = Distance (x, y, i, j);
 					cells [i, j].Height = Mathf.Min (
 						cells [i, j].Height,
