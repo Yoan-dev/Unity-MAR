@@ -52,5 +52,8 @@ public class GenerationManager : MonoBehaviour {
 		map.Generate ();
 		terrainData.SetHeights (0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
-	}
+
+        float[,] terrainHeights = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
+        terrain.terrainData.SetHeights(0, 0, terrainHeights);
+    }
 }
