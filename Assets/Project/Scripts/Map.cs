@@ -130,12 +130,12 @@ public class Map {
 		float[,] heights = GetHeights ();
 		foreach (Elevation elevation in elevations) {
 			float[] coeffX;
-			coeffX = CalculationPolynom (Mathf.Max (0, (elevation.X - elevation.Radius)), Mathf.Min (cells.GetLength(0) - 1, (elevation.X + elevation.Radius)), elevation.X, heights [elevation.X, elevation.Y] + elevation.Height);
+			coeffX = CalculationPolynom (elevation.X - elevation.Radius, elevation.X + elevation.Radius, elevation.X, heights [elevation.X, elevation.Y] + elevation.Height);
 			// Mise a jour dans la matrice res de la base de la montagne sur le sol
 			for (int baseX = Mathf.Max (0, (elevation.X - elevation.Radius)); baseX <= Mathf.Min (cells.GetLength(0) - 1, (elevation.X + elevation.Radius)); baseX++) {
 				int[] solutionZ = {-1,-1};
 				bool firstTime = true;
-				for (int baseZ = Mathf.Max (0, (elevation.Y - elevation.Radius)); baseZ <= Mathf.Min (cells.GetLength(1) - 1, (elevation.Y + elevation.Radius)); baseZ++) {
+				for (int baseZ = elevation.Y - elevation.Radius; baseZ <= elevation.Y + elevation.Radius; baseZ++) {
 					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
 						if (firstTime) {
 							firstTime = false;
@@ -149,7 +149,7 @@ public class Map {
 					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
 						float[] coeffZ;
 						coeffZ = CalculationPolynom (solutionZ [0], solutionZ [1], elevation.Y, DrawPolynom (coeffX [0], coeffX [1], coeffX [2], baseX));
-						cells [baseX, baseZ].Height = Mathf.Max (cells [baseX, baseZ].Height, heights [baseX, baseZ] + DrawPolynom (coeffZ[0], coeffZ[1], coeffZ[2], baseZ));
+						cells [baseX, baseZ].Height = Mathf.Max (cells [baseX, baseZ].Height, DrawPolynom (coeffZ[0], coeffZ[1], coeffZ[2], baseZ));
 				
 					}
 				}
@@ -162,12 +162,10 @@ public class Map {
 		float b = 0f;
 		float c = 0f;
 		if (r2 != -1) {
-			float tmp = (z - r1) * (z - r2);
-			a = y / tmp;
-			b = (-2 * y * z) / tmp;
+			a = y / ((z - r1) * (z - r2));
+			b = -2 * a * z;
 			c = y + a * Mathf.Pow (z, 2);
 		}
-        
 		float[] res = { a, b, c };
 
 		return res;
