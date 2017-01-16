@@ -7,9 +7,12 @@ public class Map {
 	private Cell[,] cells;
 	private IList<Elevation> elevations;
 
-	#region Metrics;
-
-	private int minElevations = 1;
+    #region Metrics;
+    private int minX = 0;
+    private int maxX = 500;
+    private int minZ = 0;
+    private int maxZ = 500;
+    private int minElevations = 1;
 	private int maxElevations = 1;
 	private float baseElevation = 0.3f;
 	private float minElevationHeight = 0.2f;
@@ -18,41 +21,80 @@ public class Map {
 	private int maxElevationRadius = 100;
 	private float elevationsMinGapFactor = 0.5f;
 
-	#endregion Metrics;
+    #endregion Metrics;
 
-	#region Generic;
+    #region Generic;
 
-	public void Initialize (
-		int width, 
-		int height,
-		int minElevations,
-		int maxElevations,
-		float baseElevation,
-		float minElevationHeight,
-		float maxElevationHeight,
-		int minElevationRadius,
-		int maxElevationRadius,
-		float elevationsMinGapFactor
-	) {
-		cells = CreateCells (width, height);
-		elevations = new List<Elevation>();
+    public void Initialize(
+        int minX,
+        int maxX,
+        int minZ,
+        int maxZ,
+        int minElevations,
+        int maxElevations,
+        float baseElevation,
+        float minElevationHeight,
+        float maxElevationHeight,
+        int minElevationRadius,
+        int maxElevationRadius,
+        float elevationsMinGapFactor
+    )
+    {
+        cells = CreateCells(maxX, maxZ);
+        elevations = new List<Elevation>();
 
-		this.minElevations = minElevations;
-		this.maxElevations = maxElevations;
-		this.baseElevation = baseElevation;
-		this.minElevationHeight = minElevationHeight;
-		this.maxElevationHeight = maxElevationHeight;
-		this.minElevationRadius = minElevationRadius;
-		this.maxElevationRadius = maxElevationRadius;
-		this.elevationsMinGapFactor = elevationsMinGapFactor;
-	}
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minZ = minZ;
+        this.maxZ = maxZ;
+        this.minElevations = minElevations;
+        this.maxElevations = maxElevations;
+        this.baseElevation = baseElevation;
+        this.minElevationHeight = minElevationHeight;
+        this.maxElevationHeight = maxElevationHeight;
+        this.minElevationRadius = minElevationRadius;
+        this.maxElevationRadius = maxElevationRadius;
+        this.elevationsMinGapFactor = elevationsMinGapFactor;
+    }
 
-	public Cell[,] CreateCells (int width, int height) {
+    public void UpdateMap(
+        int minX,
+        int maxX,
+        int minZ,
+        int maxZ,
+        int minElevations,
+        int maxElevations,
+        float baseElevation,
+        float minElevationHeight,
+        float maxElevationHeight,
+        int minElevationRadius,
+        int maxElevationRadius,
+        float elevationsMinGapFactor
+    )
+    {
+        elevations = new List<Elevation>();
+
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minZ = minZ;
+        this.maxZ = maxZ;
+        this.minElevations = minElevations;
+        this.maxElevations = maxElevations;
+        this.baseElevation = baseElevation;
+        this.minElevationHeight = minElevationHeight;
+        this.maxElevationHeight = maxElevationHeight;
+        this.minElevationRadius = minElevationRadius;
+        this.maxElevationRadius = maxElevationRadius;
+        this.elevationsMinGapFactor = elevationsMinGapFactor;
+    }
+
+    public Cell[,] CreateCells (int width, int height) {
 		Cell[,] res = new Cell[width, height];
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
 				res [i, j] = new Cell ();
-			}
+                res [i, j].Height = baseElevation;
+            }
 		}
 		return res;
 	}
@@ -88,15 +130,23 @@ public class Map {
 		return Mathf.Sqrt (Mathf.Pow (x1 - x2, 2) + Mathf.Pow (y1 - y2, 2));
 	}
 
-	#endregion Generic;
+    #endregion Generic;
 
-	#region Generation;
+    #region Generation;
 
-	public void Generate () {
-		GenerateElevations ();
-		GenerateRoad ();
-		GenerateMap ();
-	}
+    public void Generate()
+    {
+        GenerateElevations();
+        GenerateRoad();
+        GenerateMap();
+    }
+
+    public void GenerateUpdate()
+    {
+        GenerateElevations();
+        //GenerateRoad();
+        //GenerateMap();
+    }
 
     #region Elevations;
 
@@ -116,8 +166,8 @@ public class Map {
 			int failLimit = 10;
 			int fail = 0;
 			do {
-				x = Resources.RandInt (0, cells.GetLength (0) - 1);
-				z = Resources.RandInt (0, cells.GetLength (1) - 1);
+				x = Resources.RandInt (minX, maxX - 1);
+				z = Resources.RandInt (minZ, maxZ - 1);
 				elevation.Radius = Resources.RandInt (minElevationRadius, maxElevationRadius);
 
 				// Verification proximite avec montagnes precedentes
@@ -138,18 +188,13 @@ public class Map {
 	}
 
 	private void GenerateElevationsHeights() {
-		for (int i = 0; i < cells.GetLength (0); i++) {
-			for (int j = 0; j < cells.GetLength (1); j++) {
-				cells [i, j].Height = baseElevation;
-			}
-		}
 
 		float[,] heights = GetHeights ();
 		foreach (Elevation elevation in elevations) {
 			float[] coeffX;
 			coeffX = CalculationPolynom (elevation.X - elevation.Radius, elevation.X + elevation.Radius, elevation.X, heights [elevation.X, elevation.Y] + elevation.Height);
 			// Mise a jour dans la matrice res de la base de la montagne sur le sol
-			for (int baseX = Mathf.Max (0, (elevation.X - elevation.Radius)); baseX <= Mathf.Min (cells.GetLength(0) - 1, (elevation.X + elevation.Radius)); baseX++) {
+			for (int baseX = Mathf.Max (minX, (elevation.X - elevation.Radius)); baseX <= Mathf.Min (maxX - 1, (elevation.X + elevation.Radius)); baseX++) {
 				int[] solutionZ = {-1,-1};
 				bool firstTime = true;
 				for (int baseZ = elevation.Y - elevation.Radius; baseZ <= elevation.Y + elevation.Radius; baseZ++) {
@@ -162,7 +207,7 @@ public class Map {
 						}
 					}
 				}
-				for (int baseZ = Mathf.Max (0, (elevation.Y - elevation.Radius)); baseZ <= Mathf.Min (cells.GetLength (1) - 1, (elevation.Y + elevation.Radius)); baseZ++) {
+				for (int baseZ = Mathf.Max (minZ, (elevation.Y - elevation.Radius)); baseZ <= Mathf.Min (maxZ - 1, (elevation.Y + elevation.Radius)); baseZ++) {
 					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
 						float[] coeffZ;
 						coeffZ = CalculationPolynom (solutionZ [0], solutionZ [1], elevation.Y, DrawPolynom (coeffX [0], coeffX [1], coeffX [2], baseX));
