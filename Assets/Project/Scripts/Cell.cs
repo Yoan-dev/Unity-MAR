@@ -5,6 +5,7 @@ using UnityEngine;
 public class Cell {
 
 	private float height;
+    private int texture = 0;
 	private CellType type;
 
 	#region Accessors;
@@ -18,7 +19,20 @@ public class Cell {
 		}
 	}
 
-	public CellType Type {
+    public int Texture
+    {
+        get
+        {
+            return texture;
+        }
+
+        set
+        {
+            texture = value;
+        }
+    }
+
+    public CellType Type {
 		set {
 			type = value;
 		}
@@ -27,5 +41,5 @@ public class Cell {
 		}
 	}
 
-	#endregion Accessors;
+    #endregion Accessors;
 }

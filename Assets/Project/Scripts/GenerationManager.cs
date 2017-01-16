@@ -51,5 +51,6 @@ public class GenerationManager : MonoBehaviour {
 		Debug.Log ("Seed: " + Random.seed);
 		map.Generate ();
 		terrainData.SetHeights (0, 0, map.GetHeights());
+        terrainData.SetAlphamaps(0, 0, map.GetTextures());
 	}
 }

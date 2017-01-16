@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Resources {
 
-	public static int RandInt (int min, int max) {
+    public static int RandInt (int min, int max) {
 		return Random.Range (min, max);
 	}
 

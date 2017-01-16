@@ -5,7 +5,7 @@ using UnityEngine;
 public class Map {
 
 	private Cell[,] cells;
-	IList<Elevation> elevations;
+	private IList<Elevation> elevations;
 
 	#region Metrics;
 
@@ -66,6 +66,23 @@ public class Map {
 		}
 		return res;
 	}
+
+    public float[,,] GetTextures()
+    {
+        float[,,] res = new float[cells.GetLength(0), cells.GetLength(1), Texture.NUMBER];
+        for (int i = 0; i < res.GetLength(0); i++)
+        {
+            for (int j = 0; j < res.GetLength(1); j++)
+            {
+                for (int k = 0; k < res.GetLength(2); k++)
+                {
+                    if (cells[i, j].Texture == k) res[i, j, k] = 1.0f;
+                    else res[i, j, k] = 0;
+                }
+            }
+        }
+        return res;
+    }
 
 	private float Distance (int x1, int y1, int x2, int y2) {
 		return Mathf.Sqrt (Mathf.Pow (x1 - x2, 2) + Mathf.Pow (y1 - y2, 2));
@@ -210,9 +227,13 @@ public class Map {
 		for (int i = Mathf.Max(0, x - range); i < Mathf.Min(cells.GetLength(0) - 1, x + range + 1); i++) {
 			for (int j = Mathf.Max(0, y - range); j < Mathf.Min(cells.GetLength(1) - 1, y + range + 1); j++) {
 				if (cells [i, j].Type == CellType.ROAD)
-					cells [i, j].Height = heights[i, j] - depth;
+                {
+                    cells[i, j].Texture = Texture.ASPHALT;
+                    cells[i, j].Height = heights[i, j] - depth;
+                }
 				else {
-					float dist = Distance (x, y, i, j);
+                    cells[i, j].Texture = Texture.GRAVEL;
+                    float dist = Distance (x, y, i, j);
 					cells [i, j].Height = Mathf.Min (
 						cells [i, j].Height,
 						heights [i, j] - depth * (maxRange - dist) / maxRange
