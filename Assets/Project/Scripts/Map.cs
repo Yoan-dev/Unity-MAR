@@ -81,7 +81,9 @@ public class Map {
 		GenerateMap ();
 	}
 
-	private void GenerateElevations() {
+    #region Elevations;
+
+    private void GenerateElevations() {
 		GenerateElevationsObjects ();
 		GenerateElevationsHeights ();
 	}
@@ -184,13 +186,17 @@ public class Map {
 		return a * Mathf.Pow (x, 2) + b * x + c;
 	}
 
-	/*private bool Delta(int a, int b, int c) {
+    /*private bool Delta(int a, int b, int c) {
 		if (Mathf.Pow (b, 2) - (4 * a * c) > 0) {
 			return true;
 		}
 	}*/
 
-	private void GenerateRoad() {
+    #endregion Elevations;
+
+    #region Road;
+
+    private void GenerateRoad() {
 		for (int i = 0; i < cells.GetLength (0); i++) {
 			for (int j = 0; j < cells.GetLength (1); j++) {
 				if (
@@ -202,7 +208,11 @@ public class Map {
 		}
 	}
 
-	private void GenerateMap () {
+    #endregion Road;
+
+    #region Mapping;
+
+    private void GenerateMap () {
 		float[,] heights = GetHeights ();
 		for (int i = 0; i < cells.GetLength (0); i++) {
 			for (int j = 0; j < cells.GetLength (1); j++) {
@@ -229,5 +239,7 @@ public class Map {
 		}
 	}
 
-	#endregion Generation;
+    #endregion Mapping;
+
+    #endregion Generation;
 }
