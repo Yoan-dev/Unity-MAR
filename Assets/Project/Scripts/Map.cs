@@ -211,8 +211,7 @@ public class Map {
 					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
 						float[] coeffZ;
 						coeffZ = CalculationPolynom (solutionZ [0], solutionZ [1], elevation.Y, DrawPolynom (coeffX [0], coeffX [1], coeffX [2], baseX));
-						cells [baseX, baseZ].Height = Mathf.Max (cells [baseX, baseZ].Height, DrawPolynom (coeffZ[0], coeffZ[1], coeffZ[2], baseZ));
-				
+						cells [baseX, baseZ].Height = Mathf.Max (cells [baseX, baseZ].Height, DrawPolynom (coeffZ[0], coeffZ[1], coeffZ[2], baseZ));				
 					}
 				}
 			}

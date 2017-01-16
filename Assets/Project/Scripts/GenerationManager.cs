@@ -63,9 +63,6 @@ public class GenerationManager : MonoBehaviour
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
 
-        float[,] terrainHeights = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
-        terrain.terrainData.SetHeights(0, 0, terrainHeights);
-
         for (int i = 1; i < minX.GetLength(0); i++)
         {
             map.UpdateMap(
@@ -82,11 +79,13 @@ public class GenerationManager : MonoBehaviour
                 maxElevationRadius[i],
                 elevationsMinGapFactor[i]
             );
-            Debug.Log("toto");
             map.GenerateUpdate();
             terrainData.SetHeights(0, 0, map.GetHeights());
             terrainData.SetAlphamaps(0, 0, map.GetTextures());
         }
+
+        float[,] terrainHeights = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
+        terrain.terrainData.SetHeights(0, 0, terrainHeights);
 
     }
 }
