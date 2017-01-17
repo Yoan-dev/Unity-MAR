@@ -192,9 +192,13 @@ public class Map {
 		float[,] heights = GetHeights ();
 		foreach (Elevation elevation in elevations) {
 			float[] coeffX;
+			//int[] minBaseXArray = {0, minX, elevation.X - elevation.Radius};
+			//int[] maxBaseXArray = { cells.GetLength (0) - 1, maxX - 1, elevation.X + elevation.Radius };
+			int minBaseX = Mathf.Max (0, Mathf.Min (minX, elevation.X - elevation.Radius));
+			int maxBaseX = Mathf.Min (cells.GetLength (0) - 1, Mathf.Max (maxX - 1, elevation.X + elevation.Radius));
 			coeffX = CalculationPolynom (elevation.X - elevation.Radius, elevation.X + elevation.Radius, elevation.X, heights [elevation.X, elevation.Y] + elevation.Height);
 			// Mise a jour dans la matrice res de la base de la montagne sur le sol
-			for (int baseX = Mathf.Max (minX, (elevation.X - elevation.Radius)); baseX <= Mathf.Min (maxX - 1, (elevation.X + elevation.Radius)); baseX++) {
+			for (int baseX = minBaseX /*Mathf.Max (minX, (elevation.X - elevation.Radius))*/; baseX <= maxBaseX /*Mathf.Min (maxX - 1, (elevation.X + elevation.Radius))*/; baseX++) {
 				int[] solutionZ = {-1,-1};
 				bool firstTime = true;
 				for (int baseZ = elevation.Y - elevation.Radius; baseZ <= elevation.Y + elevation.Radius; baseZ++) {
@@ -207,7 +211,11 @@ public class Map {
 						}
 					}
 				}
-				for (int baseZ = Mathf.Max (minZ, (elevation.Y - elevation.Radius)); baseZ <= Mathf.Min (maxZ - 1, (elevation.Y + elevation.Radius)); baseZ++) {
+				//int[] minBaseZArray = { 0, minZ, elevation.Y - elevation.Radius };
+				//int[] maxBaseZArray = { cells.GetLength (1) - 1, maxZ - 1, elevation.Y + elevation.Radius };
+				int minBaseZ = Mathf.Max (0, Mathf.Min(minZ, elevation.Y - elevation.Radius));
+				int maxBaseZ = Mathf.Min (cells.GetLength (1) - 1, Mathf.Max (maxZ - 1, elevation.Y + elevation.Radius));
+				for (int baseZ = minBaseZ /*Mathf.Max (minZ, (elevation.Y - elevation.Radius))*/; baseZ <= maxBaseZ /*Mathf.Min (maxZ - 1, (elevation.Y + elevation.Radius))*/; baseZ++) {
 					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
 						float[] coeffZ;
 						coeffZ = CalculationPolynom (solutionZ [0], solutionZ [1], elevation.Y, DrawPolynom (coeffX [0], coeffX [1], coeffX [2], baseX));
