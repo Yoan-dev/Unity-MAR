@@ -42,7 +42,8 @@ public class GenerationManager : MonoBehaviour
     private void Generate()
     {
         Map map = new Map();
-        map.Initialize(
+		map.Initialize ();
+		map.UpdateMap(
             minX[0],
             maxX[0],
             minZ[0],
@@ -63,7 +64,7 @@ public class GenerationManager : MonoBehaviour
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
 
-        for (int i = 1; i < minX.GetLength(0); i++)
+		for (int i = 1; i < minX.GetLength(0); i++)
         {
             map.UpdateMap(
                 minX[i],

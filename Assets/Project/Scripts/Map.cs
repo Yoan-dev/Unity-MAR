@@ -8,6 +8,7 @@ public class Map {
 	private IList<Elevation> elevations;
 
     #region Metrics;
+
     private int minX = 0;
     private int maxX = 500;
     private int minZ = 0;
@@ -25,36 +26,9 @@ public class Map {
 
     #region Generic;
 
-    public void Initialize(
-        int minX,
-        int maxX,
-        int minZ,
-        int maxZ,
-        int minElevations,
-        int maxElevations,
-        float baseElevation,
-        float minElevationHeight,
-        float maxElevationHeight,
-        int minElevationRadius,
-        int maxElevationRadius,
-        float elevationsMinGapFactor
-    )
+    public void Initialize()
     {
         cells = CreateCells(maxX, maxZ);
-        elevations = new List<Elevation>();
-
-        this.minX = minX;
-        this.maxX = maxX;
-        this.minZ = minZ;
-        this.maxZ = maxZ;
-        this.minElevations = minElevations;
-        this.maxElevations = maxElevations;
-        this.baseElevation = baseElevation;
-        this.minElevationHeight = minElevationHeight;
-        this.maxElevationHeight = maxElevationHeight;
-        this.minElevationRadius = minElevationRadius;
-        this.maxElevationRadius = maxElevationRadius;
-        this.elevationsMinGapFactor = elevationsMinGapFactor;
     }
 
     public void UpdateMap(
@@ -249,13 +223,18 @@ public class Map {
     #region Road;
 
     private void GenerateRoad() {
-		for (int i = 0; i < cells.GetLength (0); i++) {
-			for (int j = 0; j < cells.GetLength (1); j++) {
-				if (
-					((i < 50 || i > cells.GetLength (0) - 50) || (j < 50 || j > cells.GetLength (1) - 50)) &&
-					(i > 30 && i < cells.GetLength (0) - 30 && j > 30 && j < cells.GetLength (1) - 30))
-					cells [i, j].Type = CellType.ROAD;
-				else cells [i, j].Type = CellType.GRASS;
+		IList<int[]> coords = new List<int[]> ();
+
+		coords.Add (new int[] { 30, 30 });
+
+		foreach (int[] current in coords)
+			PlaceRoad (current [0], current [1], 5);
+	}
+
+	private void PlaceRoad (int x, int y, int range) {
+		for (int i = Mathf.Max (0, x - range); i < Mathf.Min (cells.GetLength (0) - 1, x + range + 1); i++) {
+			for (int j = Mathf.Max (0, y - range); j < Mathf.Min (cells.GetLength (1) - 1, y + range + 1); j++) {
+				cells [i, j].Type = CellType.ROAD;
 			}
 		}
 	}
@@ -269,12 +248,12 @@ public class Map {
 		for (int i = 0; i < cells.GetLength (0); i++) {
 			for (int j = 0; j < cells.GetLength (1); j++) {
 				if (cells [i, j].Type == CellType.ROAD)
-					PlaceRoad (i, j, 5, 0.075f, heights);
+					DigRoad (i, j, 5, 0.075f, heights);
 			}
 		}
 	}
 
-	private void PlaceRoad (int x, int y, int range, float depth, float[,] heights) {
+	private void DigRoad (int x, int y, int range, float depth, float[,] heights) {
 		float maxRange = Distance (x, y, x + range, y + range);
 		for (int i = Mathf.Max(0, x - range); i < Mathf.Min(cells.GetLength(0) - 1, x + range + 1); i++) {
 			for (int j = Mathf.Max(0, y - range); j < Mathf.Min(cells.GetLength(1) - 1, y + range + 1); j++) {

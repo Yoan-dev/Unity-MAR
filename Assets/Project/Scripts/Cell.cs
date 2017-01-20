@@ -6,7 +6,7 @@ public class Cell {
 
 	private float height;
     private int texture = 0;
-	private CellType type;
+	private CellType type = CellType.GRASS;
 
 	#region Accessors;
 
