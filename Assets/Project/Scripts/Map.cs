@@ -77,7 +77,7 @@ public class Map {
 		float[,] res = new float[cells.GetLength (0), cells.GetLength (1)];
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, j] = cells [i, j].Height;
+				res [i, res.GetLength(1) - 1 - j] = cells [i, j].Height;
 			}
 		}
 		return res;
@@ -92,8 +92,8 @@ public class Map {
             {
                 for (int k = 0; k < res.GetLength(2); k++)
                 {
-                    if (cells[i, j].Texture == k) res[i, j, k] = 1.0f;
-                    else res[i, j, k] = 0;
+                    if (cells[i, j].Texture == k) res[i, res.GetLength(1) - 1 - j, k] = 1.0f;
+                    else res[i, res.GetLength(1) - 1 - j, k] = 0;
                 }
             }
         }
@@ -217,21 +217,199 @@ public class Map {
 	private float DrawPolynom(float a, float b, float c, int x) {
 		return a * Mathf.Pow (x, 2) + b * x + c;
 	}
-    
+
     #endregion Elevations;
 
     #region Road;
 
     private void GenerateRoad() {
-		IList<int[]> coords = new List<int[]> ();
-
-		coords.Add (new int[] { 30, 30 });
-
-		foreach (int[] current in coords)
+        int borders = 100,
+            bordersNoise = 10,
+            minTurnings = 50,
+            maxTurnings = 60,
+            minAmplitude = 30,
+            maxAmplitude = 50,
+            minZigZag = 2;
+        int zigZag = 0;
+        IList<int[]> coords = new List<int[]>();
+        Direction[] directions = new Direction[] { Direction.East, Direction.North, Direction.West, Direction.South };
+        for (int i = 0; i < directions.Length; i++)
+        {
+            int turning = Random.Range(minTurnings, maxTurnings + 1),
+                length;
+            if (i == 0) coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2, borders }); // + Start
+            if (i == directions.Length - 1) length = coords[coords.Count - 1][1] - coords[0][1] - turning;
+            else switch (directions[i])
+            {
+                case Direction.East: length = cells.GetLength(0) - coords[coords.Count - 1][0] - borders - turning - Random.Range(0, bordersNoise + 1); break;
+                case Direction.West: length = cells.GetLength(0) - (cells.GetLength(0) - coords[coords.Count - 1][0]) - borders - turning - Random.Range(0, bordersNoise + 1); break;
+                case Direction.North: length = cells.GetLength(1) - coords[coords.Count - 1][1] - borders - turning - Random.Range(0, bordersNoise + 1); break;
+                default: length = cells.GetLength(1) - (cells.GetLength(1) - coords[coords.Count - 1][1]) - borders - turning - Random.Range(0, bordersNoise + 1); break;
+            }
+            int sectionsCount = 1;//
+            for (int j = 0; j < sectionsCount; j++)
+            {
+                Debug.Log(((directions.Length - i) +" <= "+ (minZigZag - zigZag)));
+                if ((directions.Length - i <= minZigZag - zigZag) || Random.Range(0, 2) == 0)
+                {
+                    zigZag++;
+                    coords = ZigZag(coords, directions[i], Random.Range(1, length / sectionsCount / 50), length / sectionsCount);
+                }
+                else coords = Generic(coords, directions[i], length / sectionsCount, Random.Range(minAmplitude, maxAmplitude));
+            }
+            coords = Turning(coords, directions[i], directions[(i + 1) % directions.Length], turning);
+        }
+        coords = LinkPoints(coords, coords[0][0], coords[0][1], coords[coords.Count - 1][0], coords[coords.Count - 1][1]);
+        foreach (int[] current in coords)
 			PlaceRoad (current [0], current [1], 5);
 	}
 
-	private void PlaceRoad (int x, int y, int range) {
+    private IList<int[]> Turning(IList<int[]>  coords, Direction direction1, Direction direction2, int length)
+    {
+        length = length * 7 / 5;//
+        int x = coords[coords.Count - 1][0],
+            y = coords[coords.Count - 1][1];
+        for (int i = 0; i < length; i++)
+        {
+            int tempX = 0, tempY = 0;
+            float turning = Mathf.Abs((float)length / 2 - i) / (length / 2);
+            if (i < length / 2)
+            {
+                tempX++;
+                if (turning < 0.75f && (i % 2 == 0 || turning < 0.1f)) tempY++;
+            }
+            else
+            {
+                tempY++;
+                if (turning < 0.75f && (i % 2 == 0 || turning < 0.1f)) tempX++;
+            }
+            if (direction1 == Direction.North)
+            {
+                y += tempX;
+                if (direction2 == Direction.East) x += tempY;
+                else if (direction2 == Direction.West) x -= tempY;
+            }
+            else if (direction1 == Direction.South)
+            {
+                y -= tempX;
+                if (direction2 == Direction.East) x += tempY;
+                else if (direction2 == Direction.West) x -= tempY;
+            }
+            else if (direction1 == Direction.East)
+            {
+                x += tempX;
+                if (direction2 == Direction.North) y += tempY;
+                else if (direction2 == Direction.South) y -= tempY;
+            }
+            else if (direction1 == Direction.West)
+            {
+                x -= tempX;
+                if (direction2 == Direction.North) y += tempY;
+                else if (direction2 == Direction.South) y -= tempY;
+            }
+            coords.Add(new int[] { x, y });
+        }
+        return coords;
+    }
+
+    private IList<int[]> Straight (IList<int[]> coords, Direction direction, int length)
+    {
+        int x = coords[coords.Count - 1][0],
+            y = coords[coords.Count - 1][1];
+        for (int i = 0; i < length; i++)
+        {
+            switch (direction)
+            {
+                case Direction.North: y++; break;
+                case Direction.South: y--; break;
+                case Direction.West: x--; break;
+                case Direction.East: x++; break;
+            }
+            coords.Add(new int[] { x, y });
+        }
+        return coords;
+    }
+
+    private IList<int[]> ZigZag (IList<int[]> coords, Direction direction, int number, int length)
+    {
+        length = (int)(length * 5.7f / 5);//
+        Direction d1;
+        Direction d2;
+        Direction d3;
+        switch (direction)
+        {
+            case Direction.East:
+                d1 = Direction.East;
+                d2 = Direction.North;
+                d3 = Direction.South;
+                break;
+            case Direction.West:
+                d1 = Direction.West;
+                d2 = Direction.South;
+                d3 = Direction.North;
+                break;
+            case Direction.North:
+                d1 = Direction.North;
+                d2 = Direction.West;
+                d3 = Direction.East;
+                break;
+            default:
+                d1 = Direction.South;
+                d2 = Direction.East;
+                d3 = Direction.West;
+                break;
+        }
+        coords = Turning(coords, d1, d2, length / (5 * number + 2));
+        for (int i = 0; i < number; i++)
+        {
+            coords = Turning(coords, d2, d1, length / (5 * number + 2));
+            coords = Turning(coords, d1, d3, length / (5 * number + 2));
+            coords = Straight(coords, d3, length / 5);
+            coords = Turning(coords, d3, d1, length / (5 * number + 2));
+            coords = Turning(coords, d1, d2, length / (5 * number + 2));
+            if (i < number - 1) coords = Straight(coords, d2, length / 5);
+        }
+        coords = Turning(coords, d2, d1, length / 6);
+        return coords;
+    }
+
+    private IList<int[]> Generic(IList<int[]> coords, Direction direction, int length, int amplitude)
+    {
+        int x = coords[coords.Count - 1][0],
+            y = coords[coords.Count - 1][1],
+            oX = x, oY = y;
+        for (int i = 0; i < length; i++)
+        {
+            switch (direction)
+            {
+                case Direction.North: y++; break;
+                case Direction.South: y--; break;
+                case Direction.West: x--; break;
+                case Direction.East: x++; break;
+            }
+            if (direction == Direction.North || direction == Direction.South)
+                x += Random.Range((int)((oX - amplitude < x) ? -1 : 0), (int)((oX + amplitude > x) ? 2 : 1));
+            else
+                y += Random.Range((int)((oY - amplitude < y) ? -1 : 0), (int)((oY + amplitude > y) ? 2 : 1));
+            coords.Add(new int[] { x, y });
+        }
+        return coords;
+    }
+
+    private IList<int[]> LinkPoints(IList<int[]> coords, int x1, int y1, int x2, int y2)
+    {
+        while (x1 != x2 || y1 != y2)
+        {
+            if (x1 > x2) x1--;
+            else if (x1 < x2) x1++;
+            if (y1 > y2) y1--;
+            else if (y1 < y2) y1++;
+            coords.Add(new int[] { x1, y1 });
+        }
+        return coords;
+    }
+
+    private void PlaceRoad (int x, int y, int range) {
 		for (int i = Mathf.Max (0, x - range); i < Mathf.Min (cells.GetLength (0) - 1, x + range + 1); i++) {
 			for (int j = Mathf.Max (0, y - range); j < Mathf.Min (cells.GetLength (1) - 1, y + range + 1); j++) {
 				cells [i, j].Type = CellType.ROAD;
