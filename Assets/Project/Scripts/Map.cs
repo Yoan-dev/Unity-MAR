@@ -77,7 +77,7 @@ public class Map {
 		float[,] res = new float[cells.GetLength (0), cells.GetLength (1)];
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, j] = cells [i, j].Height;
+				res [i, res.GetLength(1) - 1 - j] = cells [i, j].Height;
 			}
 		}
 		return res;
@@ -92,8 +92,8 @@ public class Map {
             {
                 for (int k = 0; k < res.GetLength(2); k++)
                 {
-                    if (cells[i, j].Texture == k) res[i, j, k] = 1.0f;
-                    else res[i, j, k] = 0;
+                    if (cells[i, j].Texture == k) res[i, res.GetLength(1) - 1 - j, k] = 1.0f;
+                    else res[i, res.GetLength(1) - 1 - j, k] = 0;
                 }
             }
         }
@@ -110,7 +110,7 @@ public class Map {
 
     public void Generate()
     {
-        GenerateElevations();
+        //GenerateElevations();
         GenerateRoad();
         GenerateMap();
     }
@@ -225,13 +225,57 @@ public class Map {
     private void GenerateRoad() {
 		IList<int[]> coords = new List<int[]> ();
 
-		coords.Add (new int[] { 30, 30 });
+		coords.Add (new int[] { cells.GetLength(0) / 2, 30 });
+        coords = Turning(coords, Direction.West, 100);
 
 		foreach (int[] current in coords)
 			PlaceRoad (current [0], current [1], 5);
 	}
 
-	private void PlaceRoad (int x, int y, int range) {
+    private IList<int[]> Turning(IList<int[]>  coords, Direction direction, int length)
+    {
+        int x = coords[coords.Count - 1][0], 
+            y = coords[coords.Count - 1][1];
+        for (int i = 0; i < length; i++)
+        {
+            int tempX = 0,
+                tempY = 0;
+
+            if (i < length / 2)
+            {
+                Mathf.Abs(length / 2 - i);
+                x++;
+                if (i % 2 == 0) y++;
+            }
+            else
+            {
+                y++;
+                if (i % 2 == 0) x++;
+            }
+            coords.Add(new int[] { x, y });
+        }
+        return coords;
+    }
+
+    private IList<int[]> Straight (IList<int[]> coords, Direction direction, int length)
+    {
+
+        return null;
+    }
+
+    private IList<int[]> ZigZag (IList<int[]> coords, Direction direction, int length, int amplitude)
+    {
+
+        return null;
+    }
+
+    private IList<int[]> Generic(IList<int[]> coords, Direction direction, int length, int amplitude)
+    {
+
+        return null;
+    }
+
+    private void PlaceRoad (int x, int y, int range) {
 		for (int i = Mathf.Max (0, x - range); i < Mathf.Min (cells.GetLength (0) - 1, x + range + 1); i++) {
 			for (int j = Mathf.Max (0, y - range); j < Mathf.Min (cells.GetLength (1) - 1, y + range + 1); j++) {
 				cells [i, j].Type = CellType.ROAD;

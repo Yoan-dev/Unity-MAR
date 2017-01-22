@@ -63,7 +63,7 @@ public class GenerationManager : MonoBehaviour
         map.Generate();
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
-
+        return;
 		for (int i = 1; i < minX.GetLength(0); i++)
         {
             map.UpdateMap(
