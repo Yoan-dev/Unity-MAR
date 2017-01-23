@@ -6,20 +6,22 @@ public class Controls : MonoBehaviour
 {
     public WheelCollider[] wheels;
  
-    private float enginePower = 2000f;
+    public float enginePower = 2000f;
+    public float maxSteer = 50.0f;
 
     private float power = 0.0f;
     private float brake = 0.0f;
     private float steer = 0.0f;
 
-    private float maxSteer = 50.0f;
+
+    private Rigidbody rb;
 
     void Start()
     {
-       // GetComponent<Rigidbody>().centerOfMass = new Vector3(0,0,0);
+
     }
 
-    void Update()
+    void FixedUpdate()
     {
         power = Input.GetAxis("Vertical") * enginePower * Time.deltaTime * 250.0f;
         steer = Input.GetAxis("Horizontal") * maxSteer;
@@ -27,18 +29,8 @@ public class Controls : MonoBehaviour
 
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;
-        Debug.Log("power " + wheels[2].motorTorque);
-        Debug.Log("steer " + wheels[0].steerAngle);
-        Debug.Log("brake " + wheels[0].brakeTorque);
-
-        /*if(wheels[0].isGrounded)
-            Debug.Log(wheels[0].isGrounded);
-        if (wheels[1].isGrounded)
-            Debug.Log(wheels[1].isGrounded);
-        if (wheels[2].isGrounded)
-            Debug.Log(wheels[2].isGrounded);
-        if (wheels[3].isGrounded)
-            Debug.Log(wheels[3].isGrounded);*/
+        //rb.AddTorque(Vector3.up * steer);
+        
         if (brake > 0.0f)
         {
             wheels[0].brakeTorque = brake;
@@ -47,6 +39,7 @@ public class Controls : MonoBehaviour
             wheels[3].brakeTorque = brake;
             wheels[2].motorTorque = 0.0f;
             wheels[3].motorTorque = 0.0f;
+            //rb.AddForce(Vector3.back * power);
         }
         else
         {
@@ -56,7 +49,7 @@ public class Controls : MonoBehaviour
             wheels[3].brakeTorque = 0f;
             wheels[2].motorTorque = power;
             wheels[3].motorTorque = power;
-            //GetComponent<Rigidbody>().AddTorque(Vector3.forward * power);
+            //rb.AddForce(Vector3.forward * power);
         }
     }
 
