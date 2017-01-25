@@ -1,4 +1,4 @@
-﻿/*using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,13 +12,15 @@ public class Controls : MonoBehaviour
     private float power = 0.0f;
     private float brake = 0.0f;
     private float steer = 0.0f;
+    private Transform w;
 
 
     private Rigidbody rb;
 
     void Start()
     {
-
+        w = GameObject.Find("wheelTub_low").transform;
+        //GetComponent<Rigidbody>().centerOfMass = new Vector3(0,0.5f,0);
     }
 
     void FixedUpdate()
@@ -29,6 +31,9 @@ public class Controls : MonoBehaviour
 
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;
+        Debug.Log(w.rotation.x);
+        if (w.rotation.x < 0.30f && w.rotation.x > -0.30f)
+            w.Rotate(-steer,0,0);
         
         if (brake > 0.0f)
         {
@@ -49,8 +54,8 @@ public class Controls : MonoBehaviour
             wheels[3].motorTorque = power;
         }
     }
-}*/
-
+}
+/*
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,4 +115,4 @@ public class Controls : MonoBehaviour
             ApplyLocalPositionToVisuals(axleInfo.rightWheel);
         }
     }
-}
+}*/
