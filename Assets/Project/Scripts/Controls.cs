@@ -25,11 +25,10 @@ public class Controls : MonoBehaviour
     {
         power = Input.GetAxis("Vertical") * enginePower * Time.deltaTime * 250.0f;
         steer = Input.GetAxis("Horizontal") * maxSteer;
-        brake = Input.GetKey("m") ? GetComponent<Rigidbody>().mass * 0.1f : 0.0f;
+        brake = Input.GetKey("m") ? GetComponent<Rigidbody>().mass * 100f : 0.0f;
 
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;
-        //rb.AddTorque(Vector3.up * steer);
         
         if (brake > 0.0f)
         {
@@ -39,7 +38,6 @@ public class Controls : MonoBehaviour
             wheels[3].brakeTorque = brake;
             wheels[2].motorTorque = 0.0f;
             wheels[3].motorTorque = 0.0f;
-            //rb.AddForce(Vector3.back * power);
         }
         else
         {
@@ -49,11 +47,6 @@ public class Controls : MonoBehaviour
             wheels[3].brakeTorque = 0f;
             wheels[2].motorTorque = power;
             wheels[3].motorTorque = power;
-            //rb.AddForce(Vector3.forward * power);
         }
     }
-
-    /*private WheelCollider GetCollider(int n){
-        return wheels[n].gameObject.GetComponent<WheelCollider>();
-    }*/
 }
