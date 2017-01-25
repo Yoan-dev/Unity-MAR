@@ -15,12 +15,14 @@ public class Map {
     private int maxZ = 500;
     private int minElevations = 1;
 	private int maxElevations = 1;
-	private float baseElevation = 0.3f;
+	private float baseElevation = 0.12f;
 	private float minElevationHeight = 0.2f;
 	private float maxElevationHeight = 0.7f;
 	private int minElevationRadius = 10;
 	private int maxElevationRadius = 100;
 	private float elevationsMinGapFactor = 0.5f;
+    private int digRange = 8;
+    private int roadRange = 8;
 
     #endregion Metrics;
 
@@ -110,7 +112,7 @@ public class Map {
 
     public void Generate()
     {
-        GenerateElevations();
+        //GenerateElevations();
         GenerateRoad();
         GenerateMap();
     }
@@ -223,13 +225,14 @@ public class Map {
     #region Road;
 
     private void GenerateRoad() {
-        int borders = 100,
+        int borders = 80,
             bordersNoise = 10,
             minTurnings = 50,
             maxTurnings = 60,
             minAmplitude = 30,
             maxAmplitude = 50,
-            minZigZag = 2;
+            minZigZag = 2,
+            maxZigZag = 2;
         int zigZag = 0;
         IList<int[]> coords = new List<int[]>();
         Direction[] directions = new Direction[] { Direction.East, Direction.North, Direction.West, Direction.South };
@@ -249,8 +252,7 @@ public class Map {
             int sectionsCount = 1;//
             for (int j = 0; j < sectionsCount; j++)
             {
-                Debug.Log(((directions.Length - i) +" <= "+ (minZigZag - zigZag)));
-                if ((directions.Length - i <= minZigZag - zigZag) || Random.Range(0, 2) == 0)
+                if (zigZag < maxZigZag && ((directions.Length - i <= minZigZag - zigZag) || Random.Range(0, 2) == 0))
                 {
                     zigZag++;
                     coords = ZigZag(coords, directions[i], Random.Range(1, length / sectionsCount / 50), length / sectionsCount);
@@ -261,7 +263,7 @@ public class Map {
         }
         coords = LinkPoints(coords, coords[0][0], coords[0][1], coords[coords.Count - 1][0], coords[coords.Count - 1][1]);
         foreach (int[] current in coords)
-			PlaceRoad (current [0], current [1], 5);
+			PlaceRoad (current [0], current [1], roadRange);
 	}
 
     private IList<int[]> Turning(IList<int[]>  coords, Direction direction1, Direction direction2, int length)
@@ -426,7 +428,7 @@ public class Map {
 		for (int i = 0; i < cells.GetLength (0); i++) {
 			for (int j = 0; j < cells.GetLength (1); j++) {
 				if (cells [i, j].Type == CellType.ROAD)
-					DigRoad (i, j, 5, 0.075f, heights);
+					DigRoad (i, j, digRange, baseElevation / 1.5f, heights);
 			}
 		}
 	}
