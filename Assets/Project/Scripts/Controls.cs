@@ -31,7 +31,7 @@ public class Controls : MonoBehaviour
 
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;
-        Debug.Log(w.rotation.x);
+        //Debug.Log(w.rotation.x);
         if (w.rotation.x < 0.30f && w.rotation.x > -0.30f)
             w.Rotate(-steer,0,0);
         
