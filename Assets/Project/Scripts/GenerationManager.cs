@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GenerationManager : MonoBehaviour
 {
 
     public Terrain terrain;
     private TerrainData terrainData;
+
+    #region Prefabs;
+
+    public GameObject start;
+    public GameObject checkpoint;
+
+    #endregion Prefabs;
 
     #region Metrics;
 
@@ -43,7 +51,7 @@ public class GenerationManager : MonoBehaviour
     {
         Map map = new Map();
 		map.Initialize ();
-		map.UpdateMap(
+		/*map.UpdateMap(
             minX[0],
             maxX[0],
             minZ[0],
@@ -56,14 +64,33 @@ public class GenerationManager : MonoBehaviour
             minElevationRadius[0],
             maxElevationRadius[0],
             elevationsMinGapFactor[0]
-        );
+        );*/
         if (useSeed)
             Random.seed = seed;
         Debug.Log("Seed: " + Random.seed);
         map.Generate();
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
-        return;
+
+        /*Instantiate(start, 
+            new Vector3(
+            map.GetStartingPosition()[0], 
+            6,
+            map.GetStartingPosition()[1], 
+            Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
+        foreach (int[] coords in map.GetCheckpoints())
+        {
+            Instantiate(checkpoint,
+                new Vector3(
+                coords[0],
+                6,
+                coords[1],
+                Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
+        }*/
+
+
+        #region;     
+        return;//
 		for (int i = 1; i < minX.GetLength(0); i++)
         {
             map.UpdateMap(
@@ -87,6 +114,6 @@ public class GenerationManager : MonoBehaviour
 
         float[,] terrainHeights = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
         terrain.terrainData.SetHeights(0, 0, terrainHeights);
-
+        #endregion;
     }
 }
