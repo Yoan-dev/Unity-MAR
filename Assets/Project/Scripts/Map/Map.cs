@@ -131,7 +131,7 @@ public class Map {
 
     public int[] GetStartingPosition ()
     {
-        return new int[] { borders + maxTurnings + bordersNoise * 2 - 35, borders };   
+        return new int[] { borders + maxTurnings + bordersNoise * 2, borders };   
     }
 
     private float Distance (int x1, int y1, int x2, int y2) {
@@ -314,6 +314,7 @@ public class Map {
             if (i == 0)
             {
                 coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2, borders }); // + Start
+                //Debug.Log(coords[coords.Count - 1][0] + ", " + coords[coords.Count - 1][1]);
             }
             if (i == directions.Length - 1) length = coords[coords.Count - 1][1] - coords[0][1] - turning;
             else switch (directions[i])

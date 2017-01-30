@@ -33,26 +33,17 @@ public class GenerationManager : MonoBehaviour
     public bool useSeed = false;
 
     #endregion Metrics;
-
-    // Use this for initialization
+    
     void Start()
     {
         terrainData = terrain.terrainData;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.Space))
-            Generate();
-    }
-
-    private void Generate()
+    public void Generate()
     {
         //for (int i = 0; i < GameObject.Find("CheckpointsManager").transform.childCount; i++)
             //Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
         Map map = new Map();
-        GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Initialize();
 		map.Initialize ();
 		/*map.UpdateMap(
             minX[0],
@@ -74,7 +65,8 @@ public class GenerationManager : MonoBehaviour
         map.Generate();
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
-        
+
+        //Debug.Log(map.GetStartingPosition()[0] + ", " + map.GetStartingPosition()[1]);
         /*Instantiate(start, 
             new Vector3(
             terrainData.size.x - map.GetStartingPosition()[1], 
@@ -90,7 +82,6 @@ public class GenerationManager : MonoBehaviour
                 coords[0]),
                 Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
         }*/
-
 
         #region;     
         return;//
