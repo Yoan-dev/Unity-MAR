@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class Starting : AbstractCheckpoint
 {
-    private int tour = 0;
+    private bool started = false;
+    private int tour = 1;
 
     public override void CheckpointSuccess()
     {
-        tour++;
-        Debug.Log("Tour: " + tour);
+        if (!started) started = true;
+        else tour++;
+        GameObject.Find("Turn").GetComponent<UnityEngine.UI.Text>().text = "Turn " + tour;
     }
 
     public override bool IsStart()

@@ -20,7 +20,10 @@ public class CheckpointManager : MonoBehaviour {
 
     public bool TriggerCheckpoint (ICheckpoint checkpoint)
     {
-        if (checkpoints[checkpoint] > checkpoints[current])
+        if (
+            current == null || 
+            checkpoints[checkpoint] > checkpoints[current] ||
+            checkpoints[current] == checkpoints.Count - 1 && checkpoint.IsStart())
         {
             current = checkpoint;
             return true;
