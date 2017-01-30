@@ -8,6 +8,8 @@ public class Controls : MonoBehaviour
  
     public float enginePower = 2000f;
     public float maxSteer = 50.0f;
+    public GameObject wheel;
+    public GameObject[] realWheels;
 
     private float power = 0.0f;
     private float brake = 0.0f;
@@ -31,9 +33,13 @@ public class Controls : MonoBehaviour
 
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;
-        //Debug.Log(w.rotation.x);
-        if (w.rotation.x < 0.30f && w.rotation.x > -0.30f)
-            w.Rotate(-steer,0,0);
+        wheel.transform.localEulerAngles = new Vector3(-steer*2, 0, 0);
+       // realWheels[0].transform.localEulerAngles = 
+        foreach(GameObject w in realWheels){
+            float tmp = w.transform.localEulerAngles.x * -power;
+            if (tmp == 0) tmp = -power;
+            w.transform.localEulerAngles = new Vector3(tmp, -90, 90);
+        }
         
         if (brake > 0.0f)
         {
