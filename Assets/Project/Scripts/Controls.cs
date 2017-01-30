@@ -34,11 +34,15 @@ public class Controls : MonoBehaviour
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;
         wheel.transform.localEulerAngles = new Vector3(-steer*2, 0, 0);
-       // realWheels[0].transform.localEulerAngles = 
-        foreach(GameObject w in realWheels){
-            float tmp = w.transform.localEulerAngles.x * -power;
+        for(int i = 0; i < realWheels.Length; i++)
+        {
+            float tmp = realWheels[i].transform.localEulerAngles.x + -power;
             if (tmp == 0) tmp = -power;
-            w.transform.localEulerAngles = new Vector3(tmp, -90, 90);
+            if (i == 0 || i == 1)
+                realWheels[i].transform.localEulerAngles = new Vector3(tmp, -90 + steer / 2, 90);
+            else
+                realWheels[i].transform.localEulerAngles = new Vector3(tmp, -90, 90);
+
         }
         
         if (brake > 0.0f)
