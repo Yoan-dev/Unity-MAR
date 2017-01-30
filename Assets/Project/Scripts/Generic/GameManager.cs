@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour {
     {
         if (Input.GetKeyUp(KeyCode.Space))
             StartGame();
+        if (Input.GetKeyUp(KeyCode.R))
+            Replay();
     }
 
     // public car sera appelé par l'UI du menu
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour {
     {
         GameObject.Find("GenerationManager").GetComponent<GenerationManager>().Generate();
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Initialize();
+        GameObject.Find("RecordManager").GetComponent<RecordManager>().Initialize();
     }
 
     public void EndGame()
@@ -41,4 +44,9 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Race finished");
         // do stuff
     }
+
+   private void Replay()
+    {
+        GameObject.Find("RecordManager").GetComponent<RecordManager>().Replay();
+    } 
 }

@@ -36,7 +36,7 @@ public class Controls : MonoBehaviour
         wheel.transform.localEulerAngles = new Vector3(-steer*2, 0, 0);
         for(int i = 0; i < realWheels.Length; i++)
         {
-            float tmp = realWheels[i].transform.localEulerAngles.x + -power;
+            float tmp = realWheels[i].transform.localEulerAngles.x - power;
             if (tmp == 0) tmp = -power;
             if (i == 0 || i == 1)
                 realWheels[i].transform.localEulerAngles = new Vector3(tmp, -90 + steer / 2, 90);
