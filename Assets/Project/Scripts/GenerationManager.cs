@@ -49,9 +49,10 @@ public class GenerationManager : MonoBehaviour
 
     private void Generate()
     {
-        for (int i = 0; i < GameObject.Find("CheckpointsManager").transform.childCount; i++)
-            Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
+        //for (int i = 0; i < GameObject.Find("CheckpointsManager").transform.childCount; i++)
+            //Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
         Map map = new Map();
+        GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Initialize();
 		map.Initialize ();
 		/*map.UpdateMap(
             minX[0],
@@ -74,7 +75,7 @@ public class GenerationManager : MonoBehaviour
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
         
-        Instantiate(start, 
+        /*Instantiate(start, 
             new Vector3(
             terrainData.size.x - map.GetStartingPosition()[1], 
             6,
@@ -88,7 +89,7 @@ public class GenerationManager : MonoBehaviour
                 6,
                 coords[0]),
                 Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
-        }
+        }*/
 
 
         #region;     

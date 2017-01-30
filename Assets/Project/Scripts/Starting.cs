@@ -1,34 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Starting : MonoBehaviour {
+public class Starting : AbstractCheckpoint
+{
+    private int tour = 0;
 
-    private bool recording;
-    private IList<Vector3> replay;
-
-    void Start()
+    public override void CheckpointSuccess()
     {
-        recording = false;
-        replay = new List<Vector3>();
+        tour++;
+        Debug.Log("Tour: " + tour);
     }
 
-    void Update()
+    public override bool IsStart()
     {
-        if (recording)
-            replay.Add(transform.position);
+        return true;
     }
-
-    void OnTriggerEnter (Collider collider)
-    {
-        if (collider.gameObject.tag == "Player")
-        {
-            if (recording)
-                return;
-            else
-                recording = true;
-        }
-    }
-
-
 }

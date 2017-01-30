@@ -1,16 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Checkpoint : MonoBehaviour {
+public class Checkpoint : AbstractCheckpoint
+{
+    public override void CheckpointSuccess()
+    {
+        // do nothing
+    }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public override bool IsStart()
+    {
+        return false;
+    }
 }
