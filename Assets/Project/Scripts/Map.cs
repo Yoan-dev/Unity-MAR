@@ -131,7 +131,7 @@ public class Map {
 
     public int[] GetStartingPosition ()
     {
-        return new int[] { borders + maxTurnings + bordersNoise * 2, borders };   
+        return new int[] { borders + maxTurnings + bordersNoise * 2 - 35, borders };   
     }
 
     private float Distance (int x1, int y1, int x2, int y2) {

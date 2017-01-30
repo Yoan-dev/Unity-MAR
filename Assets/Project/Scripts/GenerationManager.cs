@@ -49,6 +49,8 @@ public class GenerationManager : MonoBehaviour
 
     private void Generate()
     {
+        for (int i = 0; i < GameObject.Find("CheckpointsManager").transform.childCount; i++)
+            Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
         Map map = new Map();
 		map.Initialize ();
 		/*map.UpdateMap(
@@ -71,22 +73,22 @@ public class GenerationManager : MonoBehaviour
         map.Generate();
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
-
-        /*Instantiate(start, 
+        
+        Instantiate(start, 
             new Vector3(
-            map.GetStartingPosition()[0], 
+            terrainData.size.x - map.GetStartingPosition()[1], 
             6,
-            map.GetStartingPosition()[1], 
+            map.GetStartingPosition()[0]), 
             Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
         foreach (int[] coords in map.GetCheckpoints())
         {
             Instantiate(checkpoint,
                 new Vector3(
-                coords[0],
+                terrainData.size.x - coords[1],
                 6,
-                coords[1],
+                coords[0]),
                 Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
-        }*/
+        }
 
 
         #region;     
