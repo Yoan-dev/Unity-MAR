@@ -15,6 +15,7 @@ public class Starting : AbstractCheckpoint
         GameManager gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (tour > gameManager.NbTurns)
         {
+            GameObject.Find("Turn").GetComponent<UnityEngine.UI.Text>().text = "Race finished !";
             gameManager.EndGame();
         }
         else GameObject.Find("Turn").GetComponent<UnityEngine.UI.Text>().text = "Turn " + tour;

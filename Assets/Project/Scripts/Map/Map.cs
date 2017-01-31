@@ -462,7 +462,7 @@ public class Map {
                 case Direction.South: if (x > westLimit) westLimit = x; break;
                 case Direction.North: if (x < eastLimit) eastLimit = x; break;
             }
-            if (i > 0 && i % 20 == 0 && i < length - 10) checkpoints.Add(new int[] { x, y });
+            if (i > 0 && i % 25 == 0 && i < length - 10) checkpoints.Add(new int[] { x, y });
             coords.Add(new int[] { x, y });
         }
         return coords;
