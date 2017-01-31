@@ -24,8 +24,8 @@ public class Map {
 	private float elevationsMinGapFactor = 0.5f;
 
     private int digRange = 5;
-    private float digDepth = 0.03f;
-    private int roadRange = 3;
+    private float digDepth = 0.02f;
+    private int roadRange = 5;
 
     private int borders = 40;
     private int bordersNoise = 5;
@@ -148,27 +148,10 @@ public class Map {
     {
         GenerateRoad();
 
-        //GenerateBaseElevations();
-        //GenerateMainElevations();
+        GenerateBaseElevations();
+        GenerateMainElevations();
 
         GenerateMap();
-        //DebugTextures();
-    }
-
-    private void DebugTextures()
-    {
-        Debug.Log("North: " + northLimit);
-        Debug.Log("South: " + southLimit);
-        Debug.Log("East: " + eastLimit);
-        Debug.Log("West: " + westLimit);
-        int range = roadRange + digRange + 50;
-        for (int i = westLimit + range; i < eastLimit - range; i++)
-        {
-            for (int j = southLimit + range; j < northLimit - range; j++)
-            {
-                cells[i, j].Texture = Texture.WATER;
-            }
-        }
     }
 
     private void GenerateBaseElevations()
@@ -176,7 +159,7 @@ public class Map {
         UpdateMap(
             0, cells.GetLength(0), 
             0, cells.GetLength(1), 
-            20, 20, 0.01f, 0.02f, 0.03f, 
+            10, 10, 0.0075f, 0.01f, 0.03f, 
             (cells.GetLength(0) + cells.GetLength(1)) / 6, 
             (cells.GetLength(0) + cells.GetLength(1)) / 4, 
             0);
@@ -187,13 +170,13 @@ public class Map {
     private void GenerateMainElevations()
     {
         int maxRadius = 35;
-        int range = maxRadius + roadRange + digRange;
+        int range = maxRadius;// + roadRange + digRange;
         UpdateMap(
             westLimit + range,
             eastLimit - range,
             southLimit + range,
             northLimit - range,
-            4, 5, 0, 0.35f, 0.5f, 25, maxRadius, 10);
+            5, 5, 0, 0.1f, 0.2f, 15, maxRadius, 5);
         GenerateUpdate();
     }
 

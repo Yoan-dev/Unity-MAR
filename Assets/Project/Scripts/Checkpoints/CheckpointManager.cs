@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour {
 
-    private IDictionary<ICheckpoint, int> checkpoints = new Dictionary<ICheckpoint, int>();
+    private IDictionary<ICheckpoint, int> checkpoints;
     private ICheckpoint current;
 
     public void Initialize()
     {
+        checkpoints = new Dictionary<ICheckpoint, int>();
         int i = 0;
         foreach (ICheckpoint checkpoint in GetComponentsInChildren<ICheckpoint>())
         {
