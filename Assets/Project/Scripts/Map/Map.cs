@@ -11,9 +11,9 @@ public class Map {
     #region Metrics;
 
     private int minX = 0;
-    private int maxX = 500;
+    private int maxX = 256;
     private int minZ = 0;
-    private int maxZ = 500;
+    private int maxZ = 256;
     private int minElevations = 1;
 	private int maxElevations = 1;
 	private float baseElevation = 0.1f;
@@ -23,16 +23,16 @@ public class Map {
 	private int maxElevationRadius = 100;
 	private float elevationsMinGapFactor = 0.5f;
 
-    private int digRange = 10;
-    private float digDepth = 0.05f;
-    private int roadRange = 7;
+    private int digRange = 5;
+    private float digDepth = 0.03f;
+    private int roadRange = 3;
 
-    private int borders = 80;
-    private int bordersNoise = 10;
-    private int minTurnings = 50;
-    private int maxTurnings = 60;
-    private int minAmplitude = 30;
-    private int maxAmplitude = 50;
+    private int borders = 40;
+    private int bordersNoise = 5;
+    private int minTurnings = 25;
+    private int maxTurnings = 30;
+    private int minAmplitude = 18;
+    private int maxAmplitude = 25;
     private int minZigZag = 2;
     private int maxZigZag = 2;
     private int zigZag = 0;
@@ -314,7 +314,7 @@ public class Map {
             if (i == 0)
             {
                 coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2, borders }); // + Start
-                //Debug.Log(coords[coords.Count - 1][0] + ", " + coords[coords.Count - 1][1]);
+                Debug.Log(coords[coords.Count - 1][0] + ", " + coords[coords.Count - 1][1]);
             }
             if (i == directions.Length - 1) length = coords[coords.Count - 1][1] - coords[0][1] - turning;
             else switch (directions[i])
@@ -346,7 +346,6 @@ public class Map {
         length = length * 7 / 5;//
         int x = coords[coords.Count - 1][0],
             y = coords[coords.Count - 1][1];
-        checkpoints.Add(new int[] { x, y });
         for (int i = 0; i < length; i++)
         {
             int tempX = 0, tempY = 0;
@@ -394,6 +393,7 @@ public class Map {
             }
             coords.Add(new int[] { x, y });
         }
+        checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
         return coords;
     }
 

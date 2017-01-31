@@ -24,7 +24,7 @@ public class RecordManager : MonoBehaviour {
         if (recording)
         {
             float time = Time.time;
-            Debug.Log((int)((time - startTime) / 60) + "min" + (int)((time - startTime) % 60) + "sec");
+            //Debug.Log((int)((time - startTime) / 60) + "min" + (int)((time - startTime) % 60) + "sec");
             Coords c = new Coords();
             c.Position = player.transform.position;
             c.Rotation = player.transform.eulerAngles;
@@ -50,8 +50,7 @@ public class RecordManager : MonoBehaviour {
         onReplay = true;
         currentFrame = 0;
         ghost = Instantiate(prefab);
-        ghost.GetComponentInChildren<Camera>().gameObject.SetActive(false);
-        ghost.GetComponent<Collider>().enabled = false;
+        //ghost.GetComponentInChildren<Camera>().gameObject.SetActive(false);
     }
 
 }
