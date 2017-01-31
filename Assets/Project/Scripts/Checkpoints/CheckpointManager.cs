@@ -22,9 +22,9 @@ public class CheckpointManager : MonoBehaviour {
     public bool TriggerCheckpoint (ICheckpoint checkpoint)
     {
         if (
-            current == null || 
-            checkpoints[checkpoint] > checkpoints[current] ||
-            checkpoints[current] == checkpoints.Count - 1 && checkpoint.IsStart())
+            current == null && checkpoint.IsStart() || current != null && 
+            (checkpoints[checkpoint] == checkpoints[current] + 1 ||
+            checkpoints[current] == checkpoints.Count - 1 && checkpoint.IsStart()))
         {
             current = checkpoint;
             return true;

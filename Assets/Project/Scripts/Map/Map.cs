@@ -128,7 +128,7 @@ public class Map {
 
     public int[] GetStartingPosition ()
     {
-        return new int[] { borders + maxTurnings + bordersNoise * 2, borders };   
+        return new int[] { borders + maxTurnings + bordersNoise * 2 + 30, borders };   
     }
 
     private float Distance (int x1, int y1, int x2, int y2) {
@@ -154,13 +154,12 @@ public class Map {
     private void GenerateBaseElevations()
     {
         UpdateMap(
-            0, cells.GetLength(0), 
-            0, cells.GetLength(1), 
+            0, cells.GetLength(0) - 1, 
+            0, cells.GetLength(1) - 1, 
             20, 20, 0.0075f, 0.01f, 0.01f, 
             (cells.GetLength(0) + cells.GetLength(1)) / 6, 
             (cells.GetLength(0) + cells.GetLength(1)) / 4, 
             0);
-        //digDepth = 0.03f;
         GenerateUpdate();
     }
 
@@ -293,21 +292,20 @@ public class Map {
                 length;
             if (i == 0)
             {
-                coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2, borders }); // + Start
-                Debug.Log(coords[coords.Count - 1][0] + ", " + coords[coords.Count - 1][1]);
+                coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2 + 20, borders });
+                coords = Straight(coords, Direction.East, 20);
             }
-            if (i == directions.Length - 1) length = coords[coords.Count - 1][1] - coords[0][1] - turning;
-            else switch (directions[i])
+            switch (directions[i])
             {
                 case Direction.East: length = cells.GetLength(0) - coords[coords.Count - 1][0] - borders - turning - Random.Range(0, bordersNoise + 1); break;
                 case Direction.West: length = cells.GetLength(0) - (cells.GetLength(0) - coords[coords.Count - 1][0]) - borders - turning - Random.Range(0, bordersNoise + 1); break;
                 case Direction.North: length = cells.GetLength(1) - coords[coords.Count - 1][1] - borders - turning - Random.Range(0, bordersNoise + 1); break;
-                default: length = cells.GetLength(1) - (cells.GetLength(1) - coords[coords.Count - 1][1]) - borders - turning - Random.Range(0, bordersNoise + 1); break;
+                default: length = coords[coords.Count - 1][1] - coords[0][1] - turning; break;
             }
             int sectionsCount = 1;//
             for (int j = 0; j < sectionsCount; j++)
             {
-                if (zigZag < maxZigZag && ((directions.Length - i <= minZigZag - zigZag) || Random.Range(0, 2) == 0))
+                if (i > 0 && zigZag < maxZigZag && ((directions.Length - i <= minZigZag - zigZag) || Random.Range(0, 2) == 0))
                 {
                     zigZag++;
                     coords = ZigZag(coords, directions[i], Random.Range(1, length / sectionsCount / 70), length / sectionsCount);
@@ -464,6 +462,7 @@ public class Map {
                 case Direction.South: if (x > westLimit) westLimit = x; break;
                 case Direction.North: if (x < eastLimit) eastLimit = x; break;
             }
+            if (i > 0 && i % 20 == 0 && i < length - 10) checkpoints.Add(new int[] { x, y });
             coords.Add(new int[] { x, y });
         }
         return coords;
@@ -507,39 +506,37 @@ public class Map {
 
     private void GenerateStart()
     {
-        for (int j = borders - roadRange; j < borders + roadRange + 2; j++)
+        for (int j = borders - roadRange; j < borders + roadRange + 1; j++)
         {
-            for (int i = -2; i < 7; i++)
+            for (int i = -2; i < 4; i++)
             {
-                cells[borders + maxTurnings + bordersNoise * 2 - i, j].Type = CellType.START;
-                cells[borders + maxTurnings + bordersNoise * 2 - i, j].Texture = Texture.START;
+                cells[borders + maxTurnings + bordersNoise * 2 + 30 - i, j].Type = CellType.START;
+                cells[borders + maxTurnings + bordersNoise * 2 + 30 - i, j].Texture = Texture.START;
             }
         }
         
     }
 
-	private void DigRoad (int x, int y, float[,] heights) {
-		//float maxRange = Distance (x, y, x + digRange, y);
-		for (int i = Mathf.Max(0, x - digRange); i < Mathf.Min(cells.GetLength(0) - 1, x + digRange); i++) {
+	private void DigRoad (int x, int y, float[,] heights)
+    {
+        float maxRange = Distance (x, y, x + digRange, y + digRange);
+        for (int i = Mathf.Max(0, x - digRange); i < Mathf.Min(cells.GetLength(0) - 1, x + digRange); i++) {
 			for (int j = Mathf.Max(0, y - digRange); j < Mathf.Min(cells.GetLength(1) - 1, y + digRange); j++) {
-                if (Distance(x, y, i, j) <= digRange)
+                if (cells[i, j].Type == CellType.ROAD)
                 {
-                    if (cells[i, j].Type == CellType.ROAD)
-                    {
-                        cells[i, j].Texture = Texture.ASPHALT;
-                        cells[i, j].Height = heights[i, j] - digDepth;
-                    }
-                    else
-                    {
-                        cells[i, j].Texture = Texture.GROUND;
-                        float dist = Distance(x, y, i, j);
-                        cells[i, j].Height = Mathf.Min(
-                            cells[i, j].Height,
-                            heights[i, j] - digDepth * (digRange - dist) / digRange
-                        );
-                    }
+                    cells[i, j].Texture = Texture.ASPHALT;
+                    cells[i, j].Height = heights[i, j] - digDepth;
                 }
-			}
+                else
+                {
+                    cells[i, j].Texture = Texture.GROUND;
+                    float dist = Distance(x, y, i, j);
+                    cells[i, j].Height = Mathf.Min(
+                        cells[i, j].Height,
+                        heights[i, j] - digDepth * (maxRange - dist) / maxRange
+                    );
+                }
+            }
 		}
 	}
 
