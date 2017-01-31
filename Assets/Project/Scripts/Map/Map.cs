@@ -519,22 +519,25 @@ public class Map {
 
 	private void DigRoad (int x, int y, float[,] heights)
     {
-        float maxRange = Distance (x, y, x + digRange, y + digRange);
+        //float maxRange = Distance (x, y, x + digRange, y + digRange);
         for (int i = Mathf.Max(0, x - digRange); i < Mathf.Min(cells.GetLength(0) - 1, x + digRange); i++) {
 			for (int j = Mathf.Max(0, y - digRange); j < Mathf.Min(cells.GetLength(1) - 1, y + digRange); j++) {
-                if (cells[i, j].Type == CellType.ROAD)
+                float dist = Distance(x, y, i, j);
+                if(dist <= digRange)
                 {
-                    cells[i, j].Texture = Texture.ASPHALT;
-                    cells[i, j].Height = heights[i, j] - digDepth;
-                }
-                else
-                {
-                    cells[i, j].Texture = Texture.GROUND;
-                    float dist = Distance(x, y, i, j);
-                    cells[i, j].Height = Mathf.Min(
-                        cells[i, j].Height,
-                        heights[i, j] - digDepth * (maxRange - dist) / maxRange
-                    );
+                    if (cells[i, j].Type == CellType.ROAD)
+                    {
+                        cells[i, j].Texture = Texture.ASPHALT;
+                        cells[i, j].Height = heights[i, j] - digDepth;
+                    }
+                    else
+                    {
+                        cells[i, j].Texture = Texture.GROUND;
+                        cells[i, j].Height = Mathf.Min(
+                            cells[i, j].Height,
+                            heights[i, j] - digDepth * (digRange - dist) / digRange
+                        );
+                    }
                 }
             }
 		}
