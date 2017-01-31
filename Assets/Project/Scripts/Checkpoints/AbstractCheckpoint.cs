@@ -14,6 +14,12 @@ public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
     private void CheckpointFailed()
     {
         Debug.Log("Wrong way");
+        Deviated();
+    }
+
+    private void Deviated()
+    {
+        GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "Trajectory deviated\r\nPress X to teleport back";
     }
 
     public void SetManager(CheckpointManager manager)
