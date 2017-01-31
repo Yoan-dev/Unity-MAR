@@ -23,7 +23,7 @@ public class Map {
 	private int maxElevationRadius = 100;
 	private float elevationsMinGapFactor = 0.5f;
 
-    private int digRange = 10;
+    private int digRange = 5;
     private float digDepth = 0.01f;
     private int roadRange = 5;
 
@@ -143,11 +143,11 @@ public class Map {
 
     public void Generate()
     {
+        GenerateRoad();
 
         GenerateBaseElevations();
         //GenerateMainElevations();
 
-        GenerateRoad();
         GenerateMap();
     }
 
@@ -156,11 +156,11 @@ public class Map {
         UpdateMap(
             0, cells.GetLength(0), 
             0, cells.GetLength(1), 
-            20, 20, 0.0075f, 0.01f, 0.03f, 
+            20, 20, 0.0075f, 0.01f, 0.01f, 
             (cells.GetLength(0) + cells.GetLength(1)) / 6, 
             (cells.GetLength(0) + cells.GetLength(1)) / 4, 
             0);
-        digDepth = baseElevation + maxElevationHeight;
+        //digDepth = 0.03f;
         GenerateUpdate();
     }
 
@@ -173,7 +173,7 @@ public class Map {
             eastLimit - range,
             southLimit + range,
             northLimit - range,
-            5, 5, 0, 0.1f, 0.2f, 15, maxRadius, 5);
+            5, 5, 0, 0.05f, 0.05f, 15, maxRadius, 5);
         GenerateUpdate();
     }
 
@@ -372,8 +372,8 @@ public class Map {
                 case Direction.North: if (x < eastLimit) eastLimit = x; break;
             }
             coords.Add(new int[] { x, y });
+            if (i == length / 2) checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
         }
-        checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
         return coords;
     }
 
