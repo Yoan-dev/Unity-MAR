@@ -23,11 +23,11 @@ public class Map {
 	private int maxElevationRadius = 100;
 	private float elevationsMinGapFactor = 0.5f;
 
-    private int digRange = 5;
-    private float digDepth = 0.02f;
+    private int digRange = 10;
+    private float digDepth = 0.01f;
     private int roadRange = 5;
 
-    private int borders = 40;
+    private int borders = 50;
     private int bordersNoise = 5;
     private int minTurnings = 25;
     private int maxTurnings = 30;
@@ -41,9 +41,6 @@ public class Map {
     private int southLimit = -9999;
     private int westLimit = -9999;
     private int eastLimit = 9999;
-
-    private int xStart;
-    private int yStart;
 
     #endregion Metrics;
 
@@ -146,11 +143,11 @@ public class Map {
 
     public void Generate()
     {
-        GenerateRoad();
 
         GenerateBaseElevations();
-        GenerateMainElevations();
+        //GenerateMainElevations();
 
+        GenerateRoad();
         GenerateMap();
     }
 
@@ -159,7 +156,7 @@ public class Map {
         UpdateMap(
             0, cells.GetLength(0), 
             0, cells.GetLength(1), 
-            10, 10, 0.0075f, 0.01f, 0.03f, 
+            20, 20, 0.0075f, 0.01f, 0.03f, 
             (cells.GetLength(0) + cells.GetLength(1)) / 6, 
             (cells.GetLength(0) + cells.GetLength(1)) / 4, 
             0);
