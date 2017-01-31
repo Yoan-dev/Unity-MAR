@@ -499,7 +499,7 @@ public class Map {
 		for (int i = 0; i < cells.GetLength (0); i++) {
 			for (int j = 0; j < cells.GetLength (1); j++) {
 				if (cells[i, j].Type == CellType.ROAD || cells[i, j].Type == CellType.START)
-                    DigRoad (i, j, digRange, digDepth, heights);
+                    DigRoad (i, j, heights);
 			}
 		}
         GenerateStart();
@@ -518,23 +518,27 @@ public class Map {
         
     }
 
-	private void DigRoad (int x, int y, int range, float depth, float[,] heights) {
-		float maxRange = Distance (x, y, x + range, y + range);
-		for (int i = Mathf.Max(0, x - range); i < Mathf.Min(cells.GetLength(0) - 1, x + range + 1); i++) {
-			for (int j = Mathf.Max(0, y - range); j < Mathf.Min(cells.GetLength(1) - 1, y + range + 1); j++) {
-				if (cells [i, j].Type == CellType.ROAD)
+	private void DigRoad (int x, int y, float[,] heights) {
+		//float maxRange = Distance (x, y, x + digRange, y);
+		for (int i = Mathf.Max(0, x - digRange); i < Mathf.Min(cells.GetLength(0) - 1, x + digRange); i++) {
+			for (int j = Mathf.Max(0, y - digRange); j < Mathf.Min(cells.GetLength(1) - 1, y + digRange); j++) {
+                if (Distance(x, y, i, j) <= digRange)
                 {
-                    cells[i, j].Texture = Texture.ASPHALT;
-                    cells[i, j].Height = heights[i, j] - depth;
+                    if (cells[i, j].Type == CellType.ROAD)
+                    {
+                        cells[i, j].Texture = Texture.ASPHALT;
+                        cells[i, j].Height = heights[i, j] - digDepth;
+                    }
+                    else
+                    {
+                        cells[i, j].Texture = Texture.GROUND;
+                        float dist = Distance(x, y, i, j);
+                        cells[i, j].Height = Mathf.Min(
+                            cells[i, j].Height,
+                            heights[i, j] - digDepth * (digRange - dist) / digRange
+                        );
+                    }
                 }
-				else {
-                    cells[i, j].Texture = Texture.GROUND;
-                    float dist = Distance (x, y, i, j);
-					cells [i, j].Height = Mathf.Min (
-						cells [i, j].Height,
-						heights [i, j] - depth * (maxRange - dist) / maxRange
-					);
-				}
 			}
 		}
 	}
