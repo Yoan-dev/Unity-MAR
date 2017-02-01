@@ -11,7 +11,6 @@ public class CheckpointManager : MonoBehaviour {
     void Update()
     {
         GameObject car = GameObject.Find("Car");
-        Debug.Log(car.transform.eulerAngles.z);
         if (deviated && Input.GetKeyDown(KeyCode.X))
         {
             car.transform.position = current.GetPosition();

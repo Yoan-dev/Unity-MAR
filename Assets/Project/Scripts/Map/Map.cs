@@ -377,7 +377,14 @@ public class Map {
                 case Direction.North: if (x < eastLimit) eastLimit = x; break;
             }
             coords.Add(new int[] { x, y });
-            if (i == length / 2 && checkpoint) checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
+            if (i == length / 2 && checkpoint)
+            {
+                checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
+                if (direction == Direction.None)
+                {
+
+                }
+            }
         }
         return coords;
     }
