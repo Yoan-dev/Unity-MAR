@@ -48,9 +48,9 @@ public class RecordManager : MonoBehaviour {
 
     public void Replay()
     {
-        onReplay = true;
         currentFrame = 0;
-        ghost = Instantiate(prefab);
+        if (!onReplay) ghost = Instantiate(prefab);
+        onReplay = true;
         //ghost.GetComponentInChildren<Camera>().gameObject.SetActive(false);
     }
 

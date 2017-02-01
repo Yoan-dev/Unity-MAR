@@ -107,7 +107,6 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Activate();
         GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
         inGameMenu.SetActive(false);
-        replay.interactable = false;
     } 
 
     private void Ghost()

@@ -54,7 +54,7 @@ public class ReplayCamerasManager : MonoBehaviour {
     {
         if (GameObject.Find("TerrainCamera") != null)
             GameObject.Find("TerrainCamera").SetActive(false);
-        GameObject.Find("Car").SetActive(false);
+        if (GameObject.Find("Car") != null) GameObject.Find("Car").SetActive(false);
         activated = true;
     }
 
