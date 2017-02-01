@@ -8,6 +8,36 @@ public class Starting : AbstractCheckpoint
     private bool started = false;
     private int tour = 1;
 
+    #region Accessors;
+
+    public int Tour
+    {
+        get
+        {
+            return tour;
+        }
+
+        set
+        {
+            tour = value;
+        }
+    }
+
+    public bool Started
+    {
+        get
+        {
+            return started;
+        }
+
+        set
+        {
+            started = value;
+        }
+    }
+
+    #endregion Accessors;
+
     public override void CheckpointSuccess(GameObject player)
     {
         position = player.transform.position;

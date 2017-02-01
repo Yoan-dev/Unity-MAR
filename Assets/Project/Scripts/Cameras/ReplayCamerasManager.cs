@@ -7,6 +7,7 @@ public class ReplayCamerasManager : MonoBehaviour {
     private IList<IReplayCamera> cameras;
     private IReplayCamera current;
     private bool activated = false;
+    private GameObject car;
 
     #region Accessors;
 
@@ -27,6 +28,7 @@ public class ReplayCamerasManager : MonoBehaviour {
 
     void Start ()
     {
+        car = GameObject.Find("Car");
     }
 	
 	void Update ()
@@ -52,10 +54,15 @@ public class ReplayCamerasManager : MonoBehaviour {
 
     public void Activate()
     {
-        if (GameObject.Find("TerrainCamera") != null)
-            GameObject.Find("TerrainCamera").SetActive(false);
-        if (GameObject.Find("Car") != null) GameObject.Find("Car").SetActive(false);
+        car.SetActive(false);
         activated = true;
+    }
+
+    public void Desactivate()
+    {
+        car.SetActive(true);
+        activated = false;
+        current = null;
     }
 
     public void ChangeActiveCamera(IReplayCamera camera)

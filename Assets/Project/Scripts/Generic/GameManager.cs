@@ -111,7 +111,10 @@ public class GameManager : MonoBehaviour {
 
     private void Ghost()
     {
-
+        GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Desactivate();
+        GameObject.Find("RecordManager").GetComponent<RecordManager>().Ghost();
+        GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
+        inGameMenu.SetActive(false);
     }
 
     private void RebootScene()

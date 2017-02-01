@@ -54,4 +54,16 @@ public class RecordManager : MonoBehaviour {
         //ghost.GetComponentInChildren<Camera>().gameObject.SetActive(false);
     }
 
+    public void Ghost()
+    {
+        Replay();
+        player.transform.position = replay[0].Position;
+        player.transform.eulerAngles = replay[0].Rotation;
+        player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        startTime = Time.time;
+        GameObject.Find("Start(Clone)").GetComponent<Starting>().Tour = 1;
+        GameObject.Find("Start(Clone)").GetComponent<Starting>().Started = false;
+        GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().TriggerStart();
+    }
+
 }

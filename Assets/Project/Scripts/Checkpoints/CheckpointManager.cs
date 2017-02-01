@@ -5,6 +5,7 @@ using UnityEngine;
 public class CheckpointManager : MonoBehaviour {
 
     private IDictionary<ICheckpoint, int> checkpoints;
+    private ICheckpoint start;
     private ICheckpoint current;
     private bool deviated = false;
 
@@ -41,13 +42,19 @@ public class CheckpointManager : MonoBehaviour {
         {
             if (checkpoint.IsStart())
             {
-                checkpoint.CheckpointSuccess(GameObject.Find("Car"));
-                current = checkpoint;
+                start = checkpoint;
             }
             checkpoint.SetManager(this);
             checkpoints.Add(checkpoint, i);
             i++;
         }
+        TriggerStart();
+    }
+
+    public void TriggerStart()
+    {
+        start.CheckpointSuccess(GameObject.Find("Car"));
+        current = start;
     }
 
     public bool TriggerCheckpoint (ICheckpoint checkpoint)
