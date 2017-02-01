@@ -38,14 +38,14 @@ public class RecordManager : MonoBehaviour {
             replay.Add(c);
         }
 
-        if (onGhost && currentFrame <= bestReplay.Count)
+        if (onGhost && currentFrame < bestReplay.Count)
         {
             Coords tmp = bestReplay[currentFrame];
             ghost.transform.position = tmp.Position;
             ghost.transform.eulerAngles = tmp.Rotation;
             currentFrame++;
         }
-        else if (onReplay && currentFrame <= lastReplay.Count)
+        else if (onReplay && currentFrame < lastReplay.Count)
         {
             Coords tmp = lastReplay[currentFrame];
             ghost.transform.position = tmp.Position;

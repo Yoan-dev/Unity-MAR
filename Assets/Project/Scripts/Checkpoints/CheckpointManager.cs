@@ -26,7 +26,7 @@ public class CheckpointManager : MonoBehaviour {
             !deviated &&
             Vector3.Distance(
                 car.transform.position,
-                current.GetGameObject().transform.position) > 60)
+                current.GetGameObject().transform.position) > 70)
         {
             Deviated();
         }
