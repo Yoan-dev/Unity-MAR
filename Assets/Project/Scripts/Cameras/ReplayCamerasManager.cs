@@ -62,7 +62,7 @@ public class ReplayCamerasManager : MonoBehaviour {
     {
         car.SetActive(true);
         activated = false;
-        current.SetActive(false);
+        if(current != null) current.SetActive(false);
         current = null;
     }
 
