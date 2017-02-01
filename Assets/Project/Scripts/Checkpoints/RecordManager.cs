@@ -51,6 +51,11 @@ public class RecordManager : MonoBehaviour {
             ghost.transform.position = tmp.Position;
             ghost.transform.eulerAngles = tmp.Rotation;
             currentFrame++;
+            if (currentFrame == lastReplay.Count - 1)
+            {
+                Replay();
+                GameObject.Find("GameManager").GetComponent<GameManager>().inGameMenu.SetActive(true);
+            }
         }
 	}
 
