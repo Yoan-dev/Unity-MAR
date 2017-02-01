@@ -14,16 +14,8 @@ public class Controls : MonoBehaviour
     private float power = 0.0f;
     private float brake = 0.0f;
     private float steer = 0.0f;
-    private Transform w;
-
 
     private Rigidbody rb;
-
-    void Start()
-    {
-        w = GameObject.Find("wheelTub_low").transform;
-        //GetComponent<Rigidbody>().centerOfMass = new Vector3(0,0.5f,0);
-    }
 
     void FixedUpdate()
     {

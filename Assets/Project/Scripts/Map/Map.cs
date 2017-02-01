@@ -100,7 +100,7 @@ public class Map {
 		float[,] res = new float[cells.GetLength (0), cells.GetLength (1)];
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, res.GetLength(1) - 1 - j] = cells [i, j].Height;
+				res [i, /*res.GetLength(1) - 1 -*/ j] = cells [i, j].Height;
 			}
 		}
 		return res;
@@ -115,8 +115,8 @@ public class Map {
             {
                 for (int k = 0; k < res.GetLength(2); k++)
                 {
-                    if (cells[i, j].Texture == k) res[i, res.GetLength(1) - 1 - j, k] = 1.0f;
-                    else res[i, res.GetLength(1) - 1 - j, k] = 0;
+                    if (cells[i, j].Texture == k) res[i, /*res.GetLength(1) - 1 -*/ j, k] = 1.0f;
+                    else res[i, /*res.GetLength(1) - 1 -*/ j, k] = 0;
                 }
             }
         }
@@ -153,7 +153,7 @@ public class Map {
         GenerateRoad();
 
         GenerateBaseElevations();
-        //GenerateMainElevations();
+        GenerateMainElevations();
 
         GenerateMap();
     }
@@ -172,14 +172,14 @@ public class Map {
 
     private void GenerateMainElevations()
     {
-        int maxRadius = 35;
-        int range = maxRadius;// + roadRange + digRange;
+        int maxRadius = Resources.RandInt(15, 35);//35;
+        int range = maxRadius + digRange + roadRange;
         UpdateMap(
             westLimit + range,
             eastLimit - range,
             southLimit + range,
             northLimit - range,
-            5, 5, 0, 0.05f, 0.05f, 15, maxRadius, 5);
+            10, 20, 0, 0.1f, 0.5f, 15, maxRadius, 5);
         GenerateUpdate();
     }
 
@@ -527,7 +527,6 @@ public class Map {
 
 	private void DigRoad (int x, int y, float[,] heights)
     {
-        //float maxRange = Distance (x, y, x + digRange, y + digRange);
         for (int i = Mathf.Max(0, x - digRange); i < Mathf.Min(cells.GetLength(0) - 1, x + digRange); i++) {
 			for (int j = Mathf.Max(0, y - digRange); j < Mathf.Min(cells.GetLength(1) - 1, y + digRange); j++) {
                 float dist = Distance(x, y, i, j);
