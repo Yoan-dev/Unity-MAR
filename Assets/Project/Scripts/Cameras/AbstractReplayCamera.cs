@@ -11,7 +11,7 @@ public abstract class AbstractReplayCamera : MonoBehaviour, IReplayCamera {
 	
 	void Update ()
     {
-        if (!manager.Activated) return;
+        if (manager == null || !manager.Activated) return;
         if (car == null) car = GameObject.Find("Replay(Clone)");
         if (car != null && Vector3.Distance(gameObject.transform.position, car.transform.position) < range)
         {

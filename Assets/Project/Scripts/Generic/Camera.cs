@@ -7,10 +7,15 @@ public class Camera : MonoBehaviour {
     public GameObject otherCamera;
 	
 	void Update () {
-		if (Input.GetKeyUp(KeyCode.C))
+		/*if (Input.GetKeyUp(KeyCode.C))
         {
-            otherCamera.SetActive(true);
-            gameObject.SetActive(false);
-        }
+            Switch();
+        }*/
 	}
+
+    public void Switch()
+    {
+        otherCamera.SetActive(true);
+        gameObject.SetActive(false);
+    }
 }

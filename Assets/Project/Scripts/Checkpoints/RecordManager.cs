@@ -24,6 +24,7 @@ public class RecordManager : MonoBehaviour {
         if (recording)
         {
             float time = Time.time;
+            GameObject.Find("Timer").GetComponent<UnityEngine.UI.Text>().text = ((int)((time - startTime) / 60)) + "min" + ((int)((time - startTime) % 60)) + "sec";
             //Debug.Log((int)((time - startTime) / 60) + "min" + (int)((time - startTime) % 60) + "sec");
             Coords c = new Coords();
             c.Position = player.transform.position;

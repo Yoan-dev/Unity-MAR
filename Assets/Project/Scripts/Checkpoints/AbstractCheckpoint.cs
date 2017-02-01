@@ -20,6 +20,7 @@ public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
 
     void OnTriggerEnter(Collider collider)
     {
+        if (manager == null) return;
         //Debug.Log("Trigger " + name);
         if (manager.TriggerCheckpoint(GetComponent<ICheckpoint>()))
         {

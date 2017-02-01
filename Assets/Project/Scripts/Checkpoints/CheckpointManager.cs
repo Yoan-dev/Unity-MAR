@@ -39,6 +39,11 @@ public class CheckpointManager : MonoBehaviour {
         int i = 0;
         foreach (ICheckpoint checkpoint in GetComponentsInChildren<ICheckpoint>())
         {
+            if (checkpoint.IsStart())
+            {
+                checkpoint.CheckpointSuccess(GameObject.Find("Car"));
+                current = checkpoint;
+            }
             checkpoint.SetManager(this);
             checkpoints.Add(checkpoint, i);
             i++;
