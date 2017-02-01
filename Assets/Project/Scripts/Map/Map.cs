@@ -312,14 +312,14 @@ public class Map {
                 }
                 else coords = Generic(coords, directions[i], length / sectionsCount, Random.Range(minAmplitude, maxAmplitude));
             }
-            coords = Turning(coords, Direction.None, directions[i], directions[(i + 1) % directions.Length], turning);
+            coords = Turning(coords, Direction.None, directions[i], directions[(i + 1) % directions.Length], turning, true);
         }
         coords = LinkPoints(coords, coords[0][0], coords[0][1], coords[coords.Count - 1][0], coords[coords.Count - 1][1]);
         foreach (int[] current in coords)
 			PlaceRoad (current [0], current [1], roadRange);
 	}
 
-    private IList<int[]> Turning(IList<int[]> coords, Direction direction, Direction direction1, Direction direction2, int length)
+    private IList<int[]> Turning(IList<int[]> coords, Direction direction, Direction direction1, Direction direction2, int length, bool checkpoint)
     {
         length = length * 7 / 5;//
         int x = coords[coords.Count - 1][0],
@@ -370,7 +370,7 @@ public class Map {
                 case Direction.North: if (x < eastLimit) eastLimit = x; break;
             }
             coords.Add(new int[] { x, y });
-            if (i == length / 2) checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
+            if (i == length / 2 && checkpoint) checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
         }
         return coords;
     }
@@ -422,17 +422,17 @@ public class Map {
                 d3 = Direction.West;
                 break;
         }
-        coords = Turning(coords, direction, d1, d2, length / (5 * number + 2));
+        coords = Turning(coords, direction, d1, d2, length / (5 * number + 2), true);
         for (int i = 0; i < number; i++)
         {
-            coords = Turning(coords, direction, d2, d1, length / (5 * number + 2));
-            coords = Turning(coords, direction, d1, d3, length / (5 * number + 2));
+            coords = Turning(coords, direction, d2, d1, length / (5 * number + 2), false);
+            coords = Turning(coords, direction, d1, d3, length / (5 * number + 2), true);
             coords = Straight(coords, d3, length / 5);
-            coords = Turning(coords, direction, d3, d1, length / (5 * number + 2));
-            coords = Turning(coords, direction, d1, d2, length / (5 * number + 2));
+            coords = Turning(coords, direction, d3, d1, length / (5 * number + 2), false);
+            coords = Turning(coords, direction, d1, d2, length / (5 * number + 2), true);
             if (i < number - 1) coords = Straight(coords, d2, length / 5);
         }
-        coords = Turning(coords, direction, d2, d1, length / 6);
+        coords = Turning(coords, direction, d2, d1, length / 6, false);
         return coords;
     }
 
@@ -462,7 +462,7 @@ public class Map {
                 case Direction.South: if (x > westLimit) westLimit = x; break;
                 case Direction.North: if (x < eastLimit) eastLimit = x; break;
             }
-            if (i > 0 && i % 25 == 0 && i < length - 10) checkpoints.Add(new int[] { x, y });
+            if (i > 0 && i % 30 == 0 && i < length - 10) checkpoints.Add(new int[] { x, y });
             coords.Add(new int[] { x, y });
         }
         return coords;

@@ -70,7 +70,7 @@ public class GenerationManager : MonoBehaviour
         Instantiate(start, 
             new Vector3(
             terrainData.size.x - map.GetStartingPosition()[1], 
-            6,
+            10,
             map.GetStartingPosition()[0]), 
             Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
         foreach (int[] coords in map.GetCheckpoints())
@@ -78,7 +78,7 @@ public class GenerationManager : MonoBehaviour
             Instantiate(checkpoint,
                 new Vector3(
                 terrainData.size.x - coords[1],
-                6,
+                10,
                 coords[0]),
                 Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
         }
