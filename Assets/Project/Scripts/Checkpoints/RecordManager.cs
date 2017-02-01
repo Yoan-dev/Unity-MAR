@@ -7,6 +7,7 @@ public class RecordManager : MonoBehaviour {
     private float startTime;
     private bool recording;
     private IList<Coords> replay;
+    private IList<Coords> lastReplay;
     private IList<Coords> bestReplay;
     private bool onReplay;
     private bool onGhost;
@@ -23,7 +24,7 @@ public class RecordManager : MonoBehaviour {
         onGhost = false;
         replay = new List<Coords>();
         bestReplay = new List<Coords>();
-	}
+    }
 	
 	void Update () {
         if (recording)
@@ -55,8 +56,9 @@ public class RecordManager : MonoBehaviour {
     public void StopRecording()
     {
         recording = false;
-        if (bestReplay.Count == 0 || replay.Count > bestReplay.Count)
+        if (bestReplay.Count == 0 || replay.Count < bestReplay.Count)
         {
+            Debug.Log("proc");
             bestReplay = replay;
         }
     }
@@ -82,6 +84,8 @@ public class RecordManager : MonoBehaviour {
         player.transform.eulerAngles = replay[0].Rotation;
         player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         startTime = Time.time;
+        GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = false;
+        GameObject.Find("ReplayStockcarCamera").GetComponent<AudioListener>().enabled = false;
         GameObject.Find("Start(Clone)").GetComponent<Starting>().Tour = 1;
         GameObject.Find("Start(Clone)").GetComponent<Starting>().Started = false;
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().TriggerStart();

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
     public UnityEngine.UI.Text turns;
     public UnityEngine.UI.Button turnPlus;
     public UnityEngine.UI.Button generate;
+    public UnityEngine.UI.Button quit;
 
     public GameObject inGameMenu;
     public UnityEngine.UI.Button replay;
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour {
         turnMinus.onClick.AddListener(() => ChangeTurn(-1));
         turnPlus.onClick.AddListener(() => ChangeTurn(1));
         turns.text = nbTurns+"";
+        quit.onClick.AddListener(() => Application.Quit());
         start.interactable = false;
 
         replay.onClick.AddListener(() => Replay());
