@@ -172,14 +172,14 @@ public class Map {
 
     private void GenerateMainElevations()
     {
-        int maxRadius = Resources.RandInt(15, 35);//35;
+        int maxRadius = 20;
         int range = maxRadius + digRange + roadRange;
         UpdateMap(
             westLimit + range,
             eastLimit - range,
             southLimit + range,
             northLimit - range,
-            10, 20, 0, 0.1f, 0.5f, 15, maxRadius, 5);
+            15, 30, 0, 0.1f, 0.5f, maxRadius, maxRadius, 0.5f);
         GenerateUpdate();
     }
 
@@ -200,30 +200,38 @@ public class Map {
 	private void GenerateElevationsObjects() {
 
 		for (int i = 0; i < Resources.RandInt (minElevations, maxElevations); i++) {
-			Elevation elevation = new Elevation ();
-			elevation.Height = Resources.RandFloat (minElevationHeight, maxElevationHeight);
 
 			bool ok = (i == 0) ? true : false;
-			int x, z;
+			int x, z, r;
 			int failLimit = 10;
 			int fail = 0;
 			do {
 				x = Resources.RandInt (minX, maxX - 1);
 				z = Resources.RandInt (minZ, maxZ - 1);
-				elevation.Radius = Resources.RandInt (minElevationRadius, maxElevationRadius);
+				r = Resources.RandInt (minElevationRadius, maxElevationRadius);
+                float minDist = r * elevationsMinGapFactor;
 
 				// Verification proximite avec montagnes precedentes
 				foreach (Elevation current in elevations) {
-					float dist = Distance (elevation.X, elevation.Y, current.X, current.Y);
-					float minDist = elevation.Radius * elevationsMinGapFactor;
-					ok = dist >= minDist;
+					float dist = Distance (x, z, current.X, current.Y);
+                    if (dist >= minDist)
+                        ok = true;
+                    else
+                    {
+                        ok = false;
+                        break;
+                    }
 				}
 				fail++;
 			} while (!ok && fail < failLimit);
 
-			if (ok) {
-				elevation.X = x;
+			if (ok)
+            {
+                Elevation elevation = new Elevation();
+                elevation.Height = Resources.RandFloat(minElevationHeight, maxElevationHeight);
+                elevation.X = x;
 				elevation.Y = z;
+                elevation.Radius = r;
 				elevations.Add (elevation);
 			}
 		}
