@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class Checkpoint : AbstractCheckpoint
 {
-    public override void CheckpointSuccess()
+    public override void CheckpointSuccess(GameObject player)
     {
-        // do nothing
+        position = player.transform.position;
+        rotation = player.transform.eulerAngles;
     }
 
     public override bool IsStart()

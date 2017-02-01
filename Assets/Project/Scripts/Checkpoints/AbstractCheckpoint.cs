@@ -6,21 +6,12 @@ using UnityEngine;
 public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
 {
     protected CheckpointManager manager;
-
+    protected Vector3 position;
+    protected Vector3 rotation;
+    
     public abstract bool IsStart();
 
-    public abstract void CheckpointSuccess();
-
-    private void CheckpointFailed()
-    {
-        Debug.Log("Wrong way");
-        Deviated();
-    }
-
-    private void Deviated()
-    {
-        GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "Trajectory deviated\r\nPress X to teleport back";
-    }
+    public abstract void CheckpointSuccess(GameObject player);
 
     public void SetManager(CheckpointManager manager)
     {
@@ -33,8 +24,22 @@ public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
         if (manager.TriggerCheckpoint(GetComponent<ICheckpoint>()))
         {
             Debug.Log("Success");
-            CheckpointSuccess();
+            CheckpointSuccess(collider.gameObject);
         }
-        else CheckpointFailed();
+    }
+
+    public Vector3 GetPosition()
+    {
+        return position;
+    }
+
+    public Vector3 GetRotation()
+    {
+        return rotation;
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
     }
 }

@@ -8,8 +8,10 @@ public class Starting : AbstractCheckpoint
     private bool started = false;
     private int tour = 1;
 
-    public override void CheckpointSuccess()
+    public override void CheckpointSuccess(GameObject player)
     {
+        position = player.transform.position;
+        rotation = player.transform.eulerAngles;
         if (!started) started = true;
         else tour++;
         GameManager gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();

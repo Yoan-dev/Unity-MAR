@@ -6,6 +6,29 @@ public class CheckpointManager : MonoBehaviour {
 
     private IDictionary<ICheckpoint, int> checkpoints;
     private ICheckpoint current;
+    private bool deviated = false;
+
+    void Update()
+    {
+        if (deviated && Input.GetKeyDown(KeyCode.X))
+        {
+            GameObject car = GameObject.Find("Car");
+            car.transform.position = current.GetPosition();
+            car.transform.eulerAngles = current.GetRotation();
+            car.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            deviated = false;
+            GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
+        }
+        else if (
+            current != null &&
+            !deviated && 
+            Vector3.Distance(
+                GameObject.Find("Car").transform.position, 
+                current.GetGameObject().transform.position) > 50)
+        {
+            Deviated();
+        }
+    }
 
     public void Initialize()
     {
@@ -21,14 +44,25 @@ public class CheckpointManager : MonoBehaviour {
 
     public bool TriggerCheckpoint (ICheckpoint checkpoint)
     {
-        if (
-            current == null && checkpoint.IsStart() || current != null && 
+        if (current == checkpoint || deviated) return false;
+        else if (
+            current == null && checkpoint.IsStart() || current != null &&
             (checkpoints[checkpoint] == checkpoints[current] + 1 ||
             checkpoints[current] == checkpoints.Count - 1 && checkpoint.IsStart()))
         {
             current = checkpoint;
             return true;
         }
-        else return false;
+        else
+        {
+            Deviated();
+            return false;
+        }
+    }
+
+    public void Deviated()
+    {
+        GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "Trajectory deviated\r\nPress X to teleport back";
+        deviated = true;
     }
 }
