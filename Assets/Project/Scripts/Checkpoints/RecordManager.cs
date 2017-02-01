@@ -63,11 +63,11 @@ public class RecordManager : MonoBehaviour {
 
     public void Prepare(bool reading)
     {
-        StopRecording();
         currentFrame = 0;
         if(ghost == null) ghost = Instantiate(prefab);
         onReplay = reading;
         onGhost = !reading;
+        recording = !reading;
     }
 
     public void Replay()
