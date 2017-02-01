@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour {
     {
         GameObject.Find("GenerationManager").GetComponent<GenerationManager>().Generate();
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Initialize();
+        GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Initialize();
         GameObject.Find("RecordManager").GetComponent<RecordManager>().Initialize();
     }
 

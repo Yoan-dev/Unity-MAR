@@ -120,14 +120,14 @@ public class GenerationManager : MonoBehaviour
 
     private void InstantiateCameras(Map map)
     {
-        for (int i = 0; i < GameObject.Find("CamerasManager").transform.childCount; i++)
-            Destroy(GameObject.Find("CamerasManager").transform.GetChild(i).gameObject);
+        for (int i = 0; i < GameObject.Find("ReplayCamerasManager").transform.childCount; i++)
+            Destroy(GameObject.Find("ReplayCamerasManager").transform.GetChild(i).gameObject);
         foreach (int[] coords in map.GetCameras().Keys)
         {
             if (map.GetCameras()[coords] == "zigzag")
-                Instantiate(zigzagCamera, new Vector3(coords[1], 75, coords[0]), Quaternion.identity, GameObject.Find("CamerasManager").transform);
+                Instantiate(zigzagCamera, new Vector3(coords[1], 75, coords[0]), Quaternion.identity, GameObject.Find("ReplayCamerasManager").transform);
             else if (map.GetCameras()[coords] == "generic")
-                Instantiate(genericCamera, new Vector3(coords[1], 12, coords[0]), Quaternion.identity, GameObject.Find("CamerasManager").transform);
+                Instantiate(genericCamera, new Vector3(coords[1], 12, coords[0]), Quaternion.identity, GameObject.Find("ReplayCamerasManager").transform);
 
         }
     }
