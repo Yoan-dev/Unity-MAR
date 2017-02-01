@@ -9,6 +9,23 @@ public class CheckpointManager : MonoBehaviour {
     private ICheckpoint current;
     private bool deviated = false;
 
+    #region Accessors;
+
+    public bool Deviated1
+    {
+        get
+        {
+            return deviated;
+        }
+
+        set
+        {
+            deviated = value;
+        }
+    }
+
+    #endregion Accessors;
+
     void Update()
     {
         GameObject car = GameObject.Find("Car");
