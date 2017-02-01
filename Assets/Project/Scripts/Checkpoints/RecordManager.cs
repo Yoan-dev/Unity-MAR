@@ -23,6 +23,7 @@ public class RecordManager : MonoBehaviour {
         onReplay = false;
         onGhost = false;
         replay = new List<Coords>();
+        lastReplay = new List<Coords>();
         bestReplay = new List<Coords>();
     }
 	
@@ -56,10 +57,10 @@ public class RecordManager : MonoBehaviour {
     public void StopRecording()
     {
         recording = false;
-        if (bestReplay.Count == 0 || replay.Count < bestReplay.Count)
+        lastReplay = replay;
+        if (bestReplay.Count == 0 || lastReplay.Count < bestReplay.Count)
         {
-            Debug.Log("proc");
-            bestReplay = replay;
+            bestReplay = lastReplay;
         }
     }
 
@@ -80,6 +81,7 @@ public class RecordManager : MonoBehaviour {
     public void Ghost()
     {
         Prepare(false);
+        replay.Clear();
         player.transform.position = replay[0].Position;
         player.transform.eulerAngles = replay[0].Rotation;
         player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
