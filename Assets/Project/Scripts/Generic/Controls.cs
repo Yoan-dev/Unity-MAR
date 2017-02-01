@@ -15,8 +15,6 @@ public class Controls : MonoBehaviour
     private float brake = 0.0f;
     private float steer = 0.0f;
 
-    private Rigidbody rb;
-
     void FixedUpdate()
     {
         power = Input.GetAxis("Vertical") * enginePower * Time.deltaTime * 250.0f;

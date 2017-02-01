@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour {
     }
 
     #endregion Accessors;
-    
+
     void Start()
     {
         start.onClick.AddListener(() => StartGame());

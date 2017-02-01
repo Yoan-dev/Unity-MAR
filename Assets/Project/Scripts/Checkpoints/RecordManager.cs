@@ -32,7 +32,7 @@ public class RecordManager : MonoBehaviour {
             replay.Add(c);
         }
 
-        if (onReplay)
+        if (onReplay && currentFrame < replay.Count)
         {
             Coords tmp = replay[currentFrame];
             ghost.transform.position = tmp.Position;

@@ -9,7 +9,7 @@ public class UI : MonoBehaviour {
 	public UnityEngine.UI.Toggle rotations;
 
 	// Objects
-	public Light light;
+	public new Light light;
 	public GameObject[] objects;
 
 	void Start () {

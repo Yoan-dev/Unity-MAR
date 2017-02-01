@@ -19,7 +19,7 @@ public class Starting : AbstractCheckpoint
         {
             gameManager.EndGame();
         }
-        else GameObject.Find("Turn").GetComponent<UnityEngine.UI.Text>().text = "Turn " + tour;
+        else GameObject.Find("Turn").GetComponent<UnityEngine.UI.Text>().text = "Turn " + tour + "/" + GameObject.Find("GameManager").GetComponent<GameManager>().NbTurns;
     }
 
     public override bool IsStart()
