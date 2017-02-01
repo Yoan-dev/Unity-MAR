@@ -31,7 +31,7 @@ public class ReplayCamerasManager : MonoBehaviour {
 	
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.R)) Activate();
+        //if (Input.GetKeyDown(KeyCode.R)) Activate();
         if (!activated) return;
         if (current == null && GameObject.Find("ReplayStockcarCamera") != null)
         {
