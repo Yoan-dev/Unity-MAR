@@ -333,6 +333,7 @@ public class Map {
             y = coords[coords.Count - 1][1];
         for (int i = 0; i < length; i++)
         {
+            int camX = 0, camY = 0;
             int tempX = 0, tempY = 0;
             float turning = Mathf.Abs((float)length / 2 - i) / (length / 2);
             if (i < length / 2)
@@ -348,24 +349,32 @@ public class Map {
             if (direction1 == Direction.North)
             {
                 y += tempX;
+                camX += 10;
+                camY += 10;
                 if (direction2 == Direction.East) x += tempY;
                 else if (direction2 == Direction.West) x -= tempY;
             }
             else if (direction1 == Direction.South)
             {
                 y -= tempX;
+                camX -= 10;
+                camY -= 10;
                 if (direction2 == Direction.East) x += tempY;
                 else if (direction2 == Direction.West) x -= tempY;
             }
             else if (direction1 == Direction.East)
             {
                 x += tempX;
+                camX += 10;
+                camY -= 10;
                 if (direction2 == Direction.North) y += tempY;
                 else if (direction2 == Direction.South) y -= tempY;
             }
             else if (direction1 == Direction.West)
             {
                 x -= tempX;
+                camX -= 10;
+                camY += 10;
                 if (direction2 == Direction.North) y += tempY;
                 else if (direction2 == Direction.South) y -= tempY;
             }
@@ -382,7 +391,7 @@ public class Map {
                 checkpoints.Add(new int[] { coords[coords.Count - 1][0], coords[coords.Count - 1][1] });
                 if (direction == Direction.None)
                 {
-
+                    cameras.Add(new int[] { coords[coords.Count - 1][0] + camX, coords[coords.Count - 1][1] + camY }, "generic");
                 }
             }
         }
