@@ -65,6 +65,8 @@ public class RecordManager : MonoBehaviour {
         lastReplay = CloneCoords(replay);
         if (bestReplay.Count == 0 || lastReplay.Count < bestReplay.Count)
         {
+            float time = Time.time;
+            GameObject.Find("Timer").GetComponent<UnityEngine.UI.Text>().text = ((int)((time - startTime) / 60)) + "min" + ((int)((time - startTime) % 60)) + "sec - New record !";
             bestReplay = CloneCoords(lastReplay);
         }
     }
