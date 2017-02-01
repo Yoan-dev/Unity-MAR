@@ -7,6 +7,7 @@ public class Map {
 	private Cell[,] cells;
 	private IList<Elevation> elevations;
     private IList<int[]> checkpoints;
+    private IDictionary<int[], string> cameras;
 
     #region Metrics;
 
@@ -50,6 +51,7 @@ public class Map {
     {
         cells = CreateCells(maxX, maxZ);
         checkpoints = new List<int[]>();
+        cameras = new Dictionary<int[], string>();
     }
 
     public void UpdateMap(
@@ -124,6 +126,11 @@ public class Map {
     public IList<int[]> GetCheckpoints()
     {
         return checkpoints;
+    }
+
+    public IDictionary<int[], string> GetCameras()
+    {
+        return cameras;
     }
 
     public int[] GetStartingPosition ()
@@ -293,7 +300,7 @@ public class Map {
             if (i == 0)
             {
                 coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2 + 20, borders });
-                coords = Straight(coords, Direction.East, 20);
+                coords = Straight(coords, Direction.East, 20, false);
             }
             switch (directions[i])
             {
@@ -375,7 +382,7 @@ public class Map {
         return coords;
     }
 
-    private IList<int[]> Straight (IList<int[]> coords, Direction direction, int length)
+    private IList<int[]> Straight (IList<int[]> coords, Direction direction, int length, bool camera)
     {
         int x = coords[coords.Count - 1][0],
             y = coords[coords.Count - 1][1];
@@ -388,6 +395,7 @@ public class Map {
                 case Direction.West: x--; break;
                 case Direction.East: x++; break;
             }
+            if (i == length / 2 && camera) cameras.Add(new int[] { x, y }, "zigzag");
             coords.Add(new int[] { x, y });
         }
         return coords;
@@ -427,10 +435,10 @@ public class Map {
         {
             coords = Turning(coords, direction, d2, d1, length / (5 * number + 2), false);
             coords = Turning(coords, direction, d1, d3, length / (5 * number + 2), true);
-            coords = Straight(coords, d3, length / 5);
+            coords = Straight(coords, d3, length / 5, true);
             coords = Turning(coords, direction, d3, d1, length / (5 * number + 2), false);
             coords = Turning(coords, direction, d1, d2, length / (5 * number + 2), true);
-            if (i < number - 1) coords = Straight(coords, d2, length / 5);
+            if (i < number - 1) coords = Straight(coords, d2, length / 5, false);
         }
         coords = Turning(coords, direction, d2, d1, length / 6, false);
         return coords;

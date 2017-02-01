@@ -12,6 +12,7 @@ public class GenerationManager : MonoBehaviour
 
     public GameObject start;
     public GameObject checkpoint;
+    public GameObject zigzagCamera;
 
     #endregion Prefabs;
 
@@ -64,24 +65,8 @@ public class GenerationManager : MonoBehaviour
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
 
-        for (int i = 0; i < GameObject.Find("CheckpointsManager").transform.childCount; i++)
-            Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
-        //Debug.Log(map.GetStartingPosition()[0] + ", " + map.GetStartingPosition()[1]);
-        Instantiate(start, 
-            new Vector3(
-            terrainData.size.x - map.GetStartingPosition()[1], 
-            10,
-            map.GetStartingPosition()[0]), 
-            Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
-        foreach (int[] coords in map.GetCheckpoints())
-        {
-            Instantiate(checkpoint,
-                new Vector3(
-                terrainData.size.x - coords[1],
-                10,
-                coords[0]),
-                Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
-        }
+        InstantiateCheckpoints(map);
+        InstantiateCameras(map);
 
         #region;     
         return;//
@@ -109,5 +94,31 @@ public class GenerationManager : MonoBehaviour
         float[,] terrainHeights = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
         terrain.terrainData.SetHeights(0, 0, terrainHeights);
         #endregion;
+    }
+
+    private void InstantiateCheckpoints(Map map)
+    {
+        for (int i = 0; i < GameObject.Find("CheckpointsManager").transform.childCount; i++)
+            Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
+        Instantiate(start,
+            new Vector3(
+            terrainData.size.x - map.GetStartingPosition()[1],
+            10,
+            map.GetStartingPosition()[0]),
+            Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
+        foreach (int[] coords in map.GetCheckpoints())
+        {
+            Instantiate(checkpoint,
+                new Vector3(
+                terrainData.size.x - coords[1],
+                10,
+                coords[0]),
+                Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
+        }
+    }
+
+    private void InstantiateCameras(Map map)
+    {
+
     }
 }
