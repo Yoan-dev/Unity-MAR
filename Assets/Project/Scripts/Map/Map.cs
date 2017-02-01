@@ -123,6 +123,19 @@ public class Map {
         return res;
     }
 
+    public bool[,] GetTrees()
+    {
+        bool[,] res = new bool[cells.GetLength(0), cells.GetLength(1)];
+        for (int i = 0; i < res.GetLength(0); i++)
+        {
+            for (int j = 0; j < res.GetLength(1); j++)
+            {
+                res[i, /*res.GetLength(1) - 1 -*/ j] = cells[i, j].Tree;
+            }
+        }
+        return res;
+    }
+
     public IList<int[]> GetCheckpoints()
     {
         return checkpoints;
@@ -534,6 +547,7 @@ public class Map {
 			}
 		}
         GenerateStart();
+        GenerateTrees();
 	}
 
     private void GenerateStart()
@@ -574,6 +588,18 @@ public class Map {
             }
 		}
 	}
+
+    private void GenerateTrees()
+    {
+        for (int i = 0; i < cells.GetLength(0); i++)
+        {
+            for (int j = 0; j < cells.GetLength(1); j++)
+            {
+                if (cells[i, j].Texture == Texture.GRASS && Random.Range(0, 100) < 1)
+                    cells[i, j].Tree = true;
+            }
+        }
+    }
 
     #endregion Mapping;
 

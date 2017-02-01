@@ -14,6 +14,7 @@ public class GenerationManager : MonoBehaviour
     public GameObject checkpoint;
     public GameObject zigzagCamera;
     public GameObject genericCamera;
+    public GameObject[] trees;
 
     #endregion Prefabs;
 
@@ -66,6 +67,7 @@ public class GenerationManager : MonoBehaviour
         terrainData.SetHeights(0, 0, map.GetHeights());
         terrainData.SetAlphamaps(0, 0, map.GetTextures());
 
+        InstantiateTrees(map);
         InstantiateCheckpoints(map);
         InstantiateCameras(map);
 
@@ -95,6 +97,24 @@ public class GenerationManager : MonoBehaviour
         float[,] terrainHeights = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
         terrain.terrainData.SetHeights(0, 0, terrainHeights);
         #endregion;
+    }
+
+    private void InstantiateTrees(Map map)
+    {
+        for (int i = 0; i < GameObject.Find("Decorations").transform.childCount; i++)
+            Destroy(GameObject.Find("Decorations").transform.GetChild(i).gameObject);
+        bool[,] trees = map.GetTrees();
+        for (int i = 0; i < trees.GetLength(0); i++)
+        {
+            for (int j = 0; j < trees.GetLength(1); j++)
+            {
+                if (trees[i, j])
+                {
+                    GameObject toInstantiate = this.trees[Random.Range(0, this.trees.Length)];
+                    Instantiate(toInstantiate, new Vector3(j, terrainData.GetHeight(j, i), i), Quaternion.identity, GameObject.Find("Decorations").transform);
+                }
+            }
+        }
     }
 
     private void InstantiateCheckpoints(Map map)

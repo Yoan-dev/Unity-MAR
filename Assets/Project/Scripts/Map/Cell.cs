@@ -7,6 +7,7 @@ public class Cell {
 	private float height;
     private int texture = 0;
 	private CellType type = CellType.GRASS;
+    private bool tree = false;
 
 	#region Accessors;
 
@@ -40,6 +41,19 @@ public class Cell {
 			return type;
 		}
 	}
+
+    public bool Tree
+    {
+        get
+        {
+            return tree;
+        }
+
+        set
+        {
+            tree = value;
+        }
+    }
 
     #endregion Accessors;
 }
