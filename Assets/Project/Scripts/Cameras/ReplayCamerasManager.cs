@@ -31,9 +31,9 @@ public class ReplayCamerasManager : MonoBehaviour {
 	
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.R)) activated = true;
+        if (Input.GetKeyDown(KeyCode.R)) Activate();
         if (!activated) return;
-        if (current == null)
+        if (current == null && GameObject.Find("ReplayStockcarCamera") != null)
         {
             GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = true;
             GameObject.Find("ReplayStockcarCamera").GetComponent<AudioListener>().enabled = true;
@@ -52,8 +52,9 @@ public class ReplayCamerasManager : MonoBehaviour {
 
     public void Activate()
     {
-        GameObject.Find("TerrainCamera").SetActive(false);
-        GameObject.Find("StockCarCamera").SetActive(false);
+        if (GameObject.Find("TerrainCamera") != null)
+            GameObject.Find("TerrainCamera").SetActive(false);
+        GameObject.Find("Car").SetActive(false);
         activated = true;
     }
 

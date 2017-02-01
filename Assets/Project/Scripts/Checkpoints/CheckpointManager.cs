@@ -20,6 +20,7 @@ public class CheckpointManager : MonoBehaviour {
             GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
         }
         else if (
+            car != null &&
             current != null &&
             !deviated &&
             Vector3.Distance(
@@ -28,7 +29,7 @@ public class CheckpointManager : MonoBehaviour {
         {
             Deviated();
         }
-        else if (car.transform.eulerAngles.z > 170 && car.transform.eulerAngles.z < 190)
+        else if (car != null && car.transform.eulerAngles.z > 170 && car.transform.eulerAngles.z < 190)
             Deviated();
     }
 
