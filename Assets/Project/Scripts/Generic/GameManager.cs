@@ -108,6 +108,7 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("RecordManager").GetComponent<RecordManager>().Replay();
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Activate();
         GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
+        GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Deviated1 = false;
         inGameMenu.SetActive(false);
     } 
 
@@ -116,6 +117,7 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Desactivate();
         GameObject.Find("RecordManager").GetComponent<RecordManager>().Ghost();
         GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
+        GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Deviated1 = false;
         inGameMenu.SetActive(false);
     }
 
