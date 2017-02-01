@@ -25,7 +25,7 @@ public class RecordManager : MonoBehaviour {
         replay = new List<Coords>();
         lastReplay = new List<Coords>();
         bestReplay = new List<Coords>();
-    }
+	}
 	
 	void Update () {
         if (recording)
