@@ -55,7 +55,7 @@ public class RecordManager : MonoBehaviour {
     public void StopRecording()
     {
         recording = false;
-        if (bestReplay == null || replay.Count > bestReplay.Count)
+        if (bestReplay.Count == 0 || replay.Count > bestReplay.Count)
         {
             bestReplay = replay;
         }
