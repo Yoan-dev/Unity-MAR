@@ -102,7 +102,7 @@ public class GenerationManager : MonoBehaviour
             Destroy(GameObject.Find("CheckpointsManager").transform.GetChild(i).gameObject);
         Instantiate(start,
             new Vector3(
-            terrainData.size.x - map.GetStartingPosition()[1],
+            map.GetStartingPosition()[1],
             10,
             map.GetStartingPosition()[0]),
             Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
@@ -110,7 +110,7 @@ public class GenerationManager : MonoBehaviour
         {
             Instantiate(checkpoint,
                 new Vector3(
-                terrainData.size.x - coords[1],
+                coords[1],
                 10,
                 coords[0]),
                 Quaternion.identity, GameObject.Find("CheckpointsManager").transform);
@@ -119,6 +119,12 @@ public class GenerationManager : MonoBehaviour
 
     private void InstantiateCameras(Map map)
     {
-
+        for (int i = 0; i < GameObject.Find("CamerasManager").transform.childCount; i++)
+            Destroy(GameObject.Find("CamerasManager").transform.GetChild(i).gameObject);
+        foreach (int[] coords in map.GetCameras().Keys)
+        {
+            if (map.GetCameras()[coords] == "zigzag")
+                Instantiate(zigzagCamera, new Vector3(coords[0], 75, coords[1]), Quaternion.identity, GameObject.Find("CamerasManager").transform);
+        }
     }
 }
