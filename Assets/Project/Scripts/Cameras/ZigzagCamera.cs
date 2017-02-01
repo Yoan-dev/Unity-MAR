@@ -7,7 +7,7 @@ public class ZigzagCamera : AbstractReplayCamera {
 
     void Start ()
     {
-        range = 80;
+        range = 75;
         transform.eulerAngles = new Vector3(90, 0, 0);
 	}
 

@@ -595,7 +595,7 @@ public class Map {
         {
             for (int j = 0; j < cells.GetLength(1); j++)
             {
-                if (cells[i, j].Texture == Texture.GRASS && Random.Range(0, 100) < 1)
+                if (cells[i, j].Texture == Texture.GRASS && Random.Range(0, 150) < 1)
                     cells[i, j].Tree = true;
             }
         }
