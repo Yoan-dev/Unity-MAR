@@ -45,9 +45,9 @@ public class RecordManager : MonoBehaviour {
             ghost.transform.eulerAngles = tmp.Rotation;
             currentFrame++;
         }
-        else if (onReplay && currentFrame <= replay.Count)
+        else if (onReplay && currentFrame <= lastReplay.Count)
         {
-            Coords tmp = replay[currentFrame];
+            Coords tmp = lastReplay[currentFrame];
             ghost.transform.position = tmp.Position;
             ghost.transform.eulerAngles = tmp.Rotation;
             currentFrame++;
@@ -57,10 +57,10 @@ public class RecordManager : MonoBehaviour {
     public void StopRecording()
     {
         recording = false;
-        lastReplay = replay;
+        lastReplay = CloneCoords(replay);
         if (bestReplay.Count == 0 || lastReplay.Count < bestReplay.Count)
         {
-            bestReplay = lastReplay;
+            bestReplay = CloneCoords(lastReplay);
         }
     }
 
@@ -82,8 +82,8 @@ public class RecordManager : MonoBehaviour {
     {
         Prepare(false);
         replay.Clear();
-        player.transform.position = replay[0].Position;
-        player.transform.eulerAngles = replay[0].Rotation;
+        player.transform.position = bestReplay[0].Position;
+        player.transform.eulerAngles = bestReplay[0].Rotation;
         player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         startTime = Time.time;
         GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = false;
@@ -91,6 +91,19 @@ public class RecordManager : MonoBehaviour {
         GameObject.Find("Start(Clone)").GetComponent<Starting>().Tour = 1;
         GameObject.Find("Start(Clone)").GetComponent<Starting>().Started = false;
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().TriggerStart();
+    }
+
+    private IList<Coords> CloneCoords(IList<Coords> from)
+    {
+        IList<Coords> res = new List<Coords>();
+        foreach (Coords current in from)
+        {
+            Coords temp = new Coords();
+            temp.Position = current.Position;
+            temp.Rotation = current.Rotation;
+            res.Add(temp);
+        }
+        return res;
     }
 
 }
