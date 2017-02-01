@@ -514,6 +514,7 @@ public class Map {
 
     private void GenerateStart()
     {
+        cameras.Add(new int[] { borders + maxTurnings + bordersNoise * 2 + 30, borders - roadRange - 5 }, "generic");
         for (int j = borders - roadRange; j < borders + roadRange + 1; j++)
         {
             for (int i = -2; i < 4; i++)

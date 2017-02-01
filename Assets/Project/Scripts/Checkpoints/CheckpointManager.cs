@@ -10,9 +10,10 @@ public class CheckpointManager : MonoBehaviour {
 
     void Update()
     {
+        GameObject car = GameObject.Find("Car");
+        Debug.Log(car.transform.eulerAngles.z);
         if (deviated && Input.GetKeyDown(KeyCode.X))
         {
-            GameObject car = GameObject.Find("Car");
             car.transform.position = current.GetPosition();
             car.transform.eulerAngles = current.GetRotation();
             car.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
@@ -21,13 +22,15 @@ public class CheckpointManager : MonoBehaviour {
         }
         else if (
             current != null &&
-            !deviated && 
+            !deviated &&
             Vector3.Distance(
-                GameObject.Find("Car").transform.position, 
+                car.transform.position,
                 current.GetGameObject().transform.position) > 60)
         {
             Deviated();
         }
+        else if (car.transform.eulerAngles.z > 170 && car.transform.eulerAngles.z < 190)
+            Deviated();
     }
 
     public void Initialize()

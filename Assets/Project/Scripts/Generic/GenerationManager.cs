@@ -13,6 +13,7 @@ public class GenerationManager : MonoBehaviour
     public GameObject start;
     public GameObject checkpoint;
     public GameObject zigzagCamera;
+    public GameObject genericCamera;
 
     #endregion Prefabs;
 
@@ -124,7 +125,10 @@ public class GenerationManager : MonoBehaviour
         foreach (int[] coords in map.GetCameras().Keys)
         {
             if (map.GetCameras()[coords] == "zigzag")
-                Instantiate(zigzagCamera, new Vector3(coords[0], 75, coords[1]), Quaternion.identity, GameObject.Find("CamerasManager").transform);
+                Instantiate(zigzagCamera, new Vector3(coords[1], 75, coords[0]), Quaternion.identity, GameObject.Find("CamerasManager").transform);
+            else if (map.GetCameras()[coords] == "generic")
+                Instantiate(genericCamera, new Vector3(coords[1], 12, coords[0]), Quaternion.identity, GameObject.Find("CamerasManager").transform);
+
         }
     }
 }
