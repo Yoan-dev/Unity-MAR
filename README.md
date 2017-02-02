@@ -4,6 +4,8 @@ This project has been made for the MAR University course (Modelisation, Animatio
 
 Drive your kart in a procedurally generated circuit, then watch your replay or fight against your best time.
 
+Download (Windows): https://drive.google.com/open?id=0B3MtR3SH00AwbFlLTy05MVB2MjA
+
 
 # Assets used
 
