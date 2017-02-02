@@ -19,7 +19,13 @@ public class Controls : MonoBehaviour
     {
         power = Input.GetAxis("Vertical") * enginePower * Time.deltaTime * 250.0f;
         steer = Input.GetAxis("Horizontal") * maxSteer;
-        brake = Input.GetKey("m") ? GetComponent<Rigidbody>().mass * 100f : 0.0f;
+        brake = Input.GetKey(KeyCode.Space) ? GetComponent<Rigidbody>().mass * 100f : 0.0f;
+        GameObject cam = GameObject.Find("StockcarCamera");
+        if (cam != null)
+        {
+            if (Input.GetKey(KeyCode.C)) cam.transform.localEulerAngles = new Vector3(0, 180, 0);
+            else cam.transform.localEulerAngles = new Vector3(0, 0, 0);
+        }
 
         wheels[0].steerAngle = steer;
         wheels[1].steerAngle = steer;

@@ -34,8 +34,8 @@ public class Map {
     private int maxTurnings = 30;
     private int minAmplitude = 18;
     private int maxAmplitude = 25;
-    private int minZigZag = 2;
-    private int maxZigZag = 2;
+    private int minZigZag = 1;
+    private int maxZigZag = 1;
     private int zigZag = 0;
 
     private int northLimit = 9999;
