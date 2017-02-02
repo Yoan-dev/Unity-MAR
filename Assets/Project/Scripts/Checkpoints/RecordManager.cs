@@ -104,6 +104,7 @@ public class RecordManager : MonoBehaviour {
 
     IEnumerator CountsGhost()
     {
+        recording = false;
         onReplay = false;
         if (ghost != null)
         {
