@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour {
     // Turns amount between 1 and 5
     private void ChangeTurn(int inc)
     {
+        if (started) return;
         nbTurns += inc;
         turns.text = nbTurns + "";
         if (nbTurns == 1) turnMinus.interactable = false;
@@ -98,6 +99,7 @@ public class GameManager : MonoBehaviour {
     // Start a race
     public void StartGame()
     {
+        if (started) return;
         started = true;
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Initialize();
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Initialize();
