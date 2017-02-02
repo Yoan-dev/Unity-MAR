@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    // Main menu UI
     public UnityEngine.UI.Button start;
     public UnityEngine.UI.Button turnMinus;
     public UnityEngine.UI.Text turns;
@@ -12,6 +13,7 @@ public class GameManager : MonoBehaviour {
     public UnityEngine.UI.Button generate;
     public UnityEngine.UI.Button quit;
 
+    // inGameMenu UI
     public GameObject inGameMenu;
     public UnityEngine.UI.Button replay;
     public UnityEngine.UI.Button ghost;
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+        // main menu initialization
         start.onClick.AddListener(() => StartGame());
         generate.onClick.AddListener(() => Generate());
         turnMinus.onClick.AddListener(() => ChangeTurn(-1));
@@ -47,6 +50,7 @@ public class GameManager : MonoBehaviour {
         quit.onClick.AddListener(() => Application.Quit());
         start.interactable = false;
 
+        // inGameMenu initialization
         replay.onClick.AddListener(() => Replay());
         ghost.onClick.AddListener(() => Ghost());
         mainMenu.onClick.AddListener(() => RebootScene());
@@ -56,13 +60,10 @@ public class GameManager : MonoBehaviour {
 
     void Update()
     {
-        /*if (Input.GetKeyUp(KeyCode.Space))
-            StartGame();
-        if (Input.GetKeyUp(KeyCode.R))
-            Replay();*/
+        // Call ingame menu
         if (Input.GetKeyUp(KeyCode.Escape) && started) inGameMenu.SetActive(!inGameMenu.activeSelf);
 
-        // HUD Controls
+        // HUD Show/Hide controls
         if (started && Input.GetKeyUp(KeyCode.K))
         {
             UnityEngine.UI.Text keys = GameObject.Find("Keys").GetComponent<UnityEngine.UI.Text>();
@@ -73,6 +74,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    // Turns amount between 1 and 5
     private void ChangeTurn(int inc)
     {
         nbTurns += inc;
@@ -83,6 +85,7 @@ public class GameManager : MonoBehaviour {
         if (inc == -1) turnPlus.interactable = true;
     }
 
+    // Generate a new map
     private void Generate()
     {
         GameObject.Find("GenerationManager").GetComponent<GenerationManager>().Generate();
@@ -91,18 +94,17 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    // public car sera appelé par l'UI du menu
+    // Start a race
     public void StartGame()
     {
         started = true;
-        GameObject.Find("RecordManager").GetComponent<RecordManager>().Initialize();
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Initialize();
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Initialize();
         GameObject.Find("TerrainCamera").GetComponent<Camera>().Switch();
-        Rigidbody car = GameObject.Find("Car").GetComponent<Rigidbody>();
-        car.constraints = RigidbodyConstraints.None;
+        StartCoroutine(Counts());
     }
 
+    // Race finished
     public void EndGame()
     {
         Debug.Log("Race finished");
@@ -113,6 +115,7 @@ public class GameManager : MonoBehaviour {
         inGameMenu.SetActive(true);
     }
 
+    // Launch a replay
     private void Replay()
     {
         GameObject.Find("RecordManager").GetComponent<RecordManager>().Replay();
@@ -122,6 +125,7 @@ public class GameManager : MonoBehaviour {
         inGameMenu.SetActive(false);
     } 
 
+    // Fight against the best time
     private void Ghost()
     {
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Desactivate();
@@ -131,8 +135,26 @@ public class GameManager : MonoBehaviour {
         inGameMenu.SetActive(false);
     }
 
+    // Reload the scene (return to main menu)
     private void RebootScene()
     {
         SceneManager.LoadScene("Game");
+    }
+
+    IEnumerator Counts()
+    {
+        UnityEngine.UI.Text counts = GameObject.Find("Counts").GetComponent<UnityEngine.UI.Text>();
+        yield return new WaitForSeconds(.25f);
+        for (int i = 3; i > 0; i--)
+        {
+            counts.text = i+"";
+            yield return new WaitForSeconds(1.0f);
+        }
+        counts.text = "START !";
+        GameObject.Find("RecordManager").GetComponent<RecordManager>().Initialize();
+        Rigidbody car = GameObject.Find("Car").GetComponent<Rigidbody>();
+        car.constraints = RigidbodyConstraints.None;
+        yield return new WaitForSeconds(2.0f);
+        counts.text = "";
     }
 }
