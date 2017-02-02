@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour {
     // Generate a new map
     private void Generate()
     {
+        GameObject.Find("Info").GetComponent<UnityEngine.UI.Text>().text = "";
         GameObject.Find("GenerationManager").GetComponent<GenerationManager>().Generate();
         GameObject.Find("TerrainCamera").transform.position = new Vector3(128, 256, 128);
         start.interactable = true;
@@ -129,8 +130,8 @@ public class GameManager : MonoBehaviour {
     private void Ghost()
     {
         GameObject.Find("ReplayCamerasManager").GetComponent<ReplayCamerasManager>().Desactivate();
-        GameObject.Find("RecordManager").GetComponent<RecordManager>().Ghost();
         GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
+        GameObject.Find("RecordManager").GetComponent<RecordManager>().Ghost();
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().Deviated1 = false;
         inGameMenu.SetActive(false);
     }
@@ -143,11 +144,12 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator Counts()
     {
+        GameObject.Find("Timer").GetComponent<UnityEngine.UI.Text>().text = "0min0sec";
         UnityEngine.UI.Text counts = GameObject.Find("Counts").GetComponent<UnityEngine.UI.Text>();
         yield return new WaitForSeconds(.25f);
         for (int i = 3; i > 0; i--)
         {
-            counts.text = i+"";
+            counts.text = i + "";
             yield return new WaitForSeconds(1.0f);
         }
         counts.text = "START !";

@@ -87,17 +87,45 @@ public class RecordManager : MonoBehaviour {
 
     public void Ghost()
     {
-        Prepare(false);
         replay.Clear();
         player.transform.position = bestReplay[0].Position;
         player.transform.eulerAngles = bestReplay[0].Rotation;
         player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-        startTime = Time.time;
-        GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = false;
-        GameObject.Find("ReplayStockcarCamera").GetComponent<AudioListener>().enabled = false;
+        if (ghost != null)
+        {
+            GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = false;
+            GameObject.Find("ReplayStockcarCamera").GetComponent<AudioListener>().enabled = false;
+        }
         GameObject.Find("Start(Clone)").GetComponent<Starting>().Tour = 1;
         GameObject.Find("Start(Clone)").GetComponent<Starting>().Started = false;
         GameObject.Find("CheckpointsManager").GetComponent<CheckpointManager>().TriggerStart();
+        StartCoroutine(CountsGhost());
+    }
+
+    IEnumerator CountsGhost()
+    {
+        onReplay = false;
+        if (ghost != null)
+        {
+            ghost.transform.position = bestReplay[0].Position;
+            ghost.transform.eulerAngles = bestReplay[0].Rotation;
+        }
+        Rigidbody car = GameObject.Find("Car").GetComponent<Rigidbody>();
+        car.constraints = RigidbodyConstraints.FreezeAll;
+        GameObject.Find("Timer").GetComponent<UnityEngine.UI.Text>().text = "0min0sec";
+        UnityEngine.UI.Text counts = GameObject.Find("Counts").GetComponent<UnityEngine.UI.Text>();
+        yield return new WaitForSeconds(.25f);
+        for (int i = 3; i > 0; i--)
+        {
+            counts.text = i + "";
+            yield return new WaitForSeconds(1.0f);
+        }
+        counts.text = "START !";
+        car.constraints = RigidbodyConstraints.None;
+        startTime = Time.time;
+        Prepare(false);
+        yield return new WaitForSeconds(2.0f);
+        counts.text = "";
     }
 
     private IList<Coords> CloneCoords(IList<Coords> from)
