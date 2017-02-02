@@ -61,6 +61,16 @@ public class GameManager : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.R))
             Replay();*/
         if (Input.GetKeyUp(KeyCode.Escape) && started) inGameMenu.SetActive(!inGameMenu.activeSelf);
+
+        // HUD Controls
+        if (started && Input.GetKeyUp(KeyCode.K))
+        {
+            UnityEngine.UI.Text keys = GameObject.Find("Keys").GetComponent<UnityEngine.UI.Text>();
+            keys.enabled = !keys.enabled;
+            GameObject.Find("KeysTitle").GetComponent<UnityEngine.UI.Text>().text = (keys.enabled) ?
+                "Press K to hide controls" :
+                "Press K to show controls";
+        }
     }
 
     private void ChangeTurn(int inc)
