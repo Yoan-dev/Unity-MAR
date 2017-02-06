@@ -314,7 +314,7 @@ public class Map {
         Direction[] directions = new Direction[] { Direction.East, Direction.North, Direction.West, Direction.South };
         for (int i = 0; i < directions.Length; i++)
         {
-            int turning = Random.Range(minTurnings, maxTurnings + 1),
+            int turning = Resources.RandInt(minTurnings, maxTurnings + 1),
                 length;
             if (i == 0)
             {
@@ -323,20 +323,20 @@ public class Map {
             }
             switch (directions[i])
             {
-                case Direction.East: length = cells.GetLength(0) - coords[coords.Count - 1][0] - borders - turning - Random.Range(0, bordersNoise + 1); break;
-                case Direction.West: length = cells.GetLength(0) - (cells.GetLength(0) - coords[coords.Count - 1][0]) - borders - turning - Random.Range(0, bordersNoise + 1); break;
-                case Direction.North: length = cells.GetLength(1) - coords[coords.Count - 1][1] - borders - turning - Random.Range(0, bordersNoise + 1); break;
+                case Direction.East: length = cells.GetLength(0) - coords[coords.Count - 1][0] - borders - turning - Resources.RandInt(0, bordersNoise + 1); break;
+                case Direction.West: length = cells.GetLength(0) - (cells.GetLength(0) - coords[coords.Count - 1][0]) - borders - turning - Resources.RandInt(0, bordersNoise + 1); break;
+                case Direction.North: length = cells.GetLength(1) - coords[coords.Count - 1][1] - borders - turning - Resources.RandInt(0, bordersNoise + 1); break;
                 default: length = coords[coords.Count - 1][1] - coords[0][1] - turning; break;
             }
             int sectionsCount = 1;//
             for (int j = 0; j < sectionsCount; j++)
             {
-                if (i > 0 && zigZag < maxZigZag && ((directions.Length - i <= minZigZag - zigZag) || Random.Range(0, 2) == 0))
+                if (i > 0 && zigZag < maxZigZag && ((directions.Length - i <= minZigZag - zigZag) || Resources.RandInt(0, 2) == 0))
                 {
                     zigZag++;
-                    coords = ZigZag(coords, directions[i], Random.Range(1, length / sectionsCount / 70), length / sectionsCount);
+                    coords = ZigZag(coords, directions[i], Resources.RandInt(1, length / sectionsCount / 70), length / sectionsCount);
                 }
-                else coords = Generic(coords, directions[i], length / sectionsCount, Random.Range(minAmplitude, maxAmplitude));
+                else coords = Generic(coords, directions[i], length / sectionsCount, Resources.RandInt(minAmplitude, maxAmplitude));
             }
             coords = Turning(coords, Direction.None, directions[i], directions[(i + 1) % directions.Length], turning, true);
         }
@@ -494,9 +494,9 @@ public class Map {
                 case Direction.East: x++; break;
             }
             if (direction == Direction.North || direction == Direction.South)
-                x += Random.Range((int)((oX - amplitude < x) ? -1 : 0), (int)((oX + amplitude > x) ? 2 : 1));
+                x += Resources.RandInt((int)((oX - amplitude < x) ? -1 : 0), (int)((oX + amplitude > x) ? 2 : 1));
             else
-                y += Random.Range((int)((oY - amplitude < y) ? -1 : 0), (int)((oY + amplitude > y) ? 2 : 1));
+                y += Resources.RandInt((int)((oY - amplitude < y) ? -1 : 0), (int)((oY + amplitude > y) ? 2 : 1));
 
             switch (direction)
             {
@@ -593,7 +593,7 @@ public class Map {
         {
             for (int j = 0; j < cells.GetLength(1); j++)
             {
-                if (cells[i, j].Texture == Texture.GRASS && Random.Range(0, 150) < 1)
+                if (cells[i, j].Texture == Texture.GRASS && Resources.RandInt(0, 150) < 1)
                     cells[i, j].Tree = true;
             }
         }

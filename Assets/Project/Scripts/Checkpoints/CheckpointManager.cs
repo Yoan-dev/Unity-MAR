@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+// manage the checkpoints
 public class CheckpointManager : MonoBehaviour {
 
     private IDictionary<ICheckpoint, int> checkpoints;
@@ -29,6 +29,9 @@ public class CheckpointManager : MonoBehaviour {
     void Update()
     {
         GameObject car = GameObject.Find("Car");
+
+        // if the player goes the wrong way / is too far from the last checkpoint
+        // he can teleport back by pressing X
         if (deviated && Input.GetKeyDown(KeyCode.X))
         {
             car.transform.position = current.GetPosition();
@@ -37,6 +40,8 @@ public class CheckpointManager : MonoBehaviour {
             deviated = false;
             GameObject.Find("Alert").GetComponent<UnityEngine.UI.Text>().text = "";
         }
+
+        // else we verify if he is too far
         else if (
             car != null &&
             current != null &&
@@ -47,6 +52,8 @@ public class CheckpointManager : MonoBehaviour {
         {
             Deviated();
         }
+
+        // else we verify if the car is upside down (count as deviated and allow teleporting back)
         else if (car != null && car.transform.eulerAngles.z > 170 && car.transform.eulerAngles.z < 190)
             Deviated();
     }
@@ -70,10 +77,13 @@ public class CheckpointManager : MonoBehaviour {
 
     public void TriggerStart()
     {
+        // trigger the starting checkpoint
+        // used at the start of a race
         start.CheckpointSuccess(GameObject.Find("Car"));
         current = start;
     }
 
+    // verify if a checkpoint is valid when triggered
     public bool TriggerCheckpoint (ICheckpoint checkpoint)
     {
         if (current == checkpoint || deviated) return false;

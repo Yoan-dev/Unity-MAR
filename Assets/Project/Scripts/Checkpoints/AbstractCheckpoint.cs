@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+// checkpoint template
 public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
 {
     protected CheckpointManager manager;
@@ -11,6 +9,7 @@ public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
     
     public abstract bool IsStart();
 
+    // if the checkpoint is valid when triggered by the player
     public abstract void CheckpointSuccess(GameObject player);
 
     public void SetManager(CheckpointManager manager)
@@ -18,13 +17,12 @@ public abstract class AbstractCheckpoint : MonoBehaviour, ICheckpoint
         this.manager = manager;
     }
 
+    // detection of the car
     void OnTriggerEnter(Collider collider)
     {
         if (manager == null) return;
-        //Debug.Log("Trigger " + name);
         if (manager.TriggerCheckpoint(GetComponent<ICheckpoint>()))
         {
-            //Debug.Log("Success");
             CheckpointSuccess(collider.gameObject);
         }
     }

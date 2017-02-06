@@ -1,17 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+// special camera allowing to switch to another
+// used to switch from menu to game
 public class Camera : MonoBehaviour {
 
     public GameObject otherCamera;
-	
-	void Update () {
-		/*if (Input.GetKeyUp(KeyCode.C))
-        {
-            Switch();
-        }*/
-	}
 
     public void Switch()
     {

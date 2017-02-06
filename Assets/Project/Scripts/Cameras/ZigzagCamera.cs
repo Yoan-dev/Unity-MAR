@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+// replay camera placed above the zigzag sections
 public class ZigzagCamera : AbstractReplayCamera {
 
     void Start ()

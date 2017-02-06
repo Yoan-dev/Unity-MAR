@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Cell {
+﻿public class Cell {
 
 	private float height;
     private int texture = 0;
