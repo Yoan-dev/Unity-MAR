@@ -39,6 +39,7 @@ public class RecordManager : MonoBehaviour {
             replay.Add(c);
         }
 
+		// Si le fantôme est lancé, il joue le meilleur temps
         if (onGhost && currentFrame < bestReplay.Count)
         {
             Coords tmp = bestReplay[currentFrame];
@@ -46,6 +47,7 @@ public class RecordManager : MonoBehaviour {
             ghost.transform.eulerAngles = tmp.Rotation;
             currentFrame++;
         }
+		// Pour le replay classique on joue le dernier temps
         else if (onReplay && currentFrame < lastReplay.Count)
         {
             Coords tmp = lastReplay[currentFrame];
@@ -60,6 +62,7 @@ public class RecordManager : MonoBehaviour {
         }
 	}
 
+	// Traitement pour savoir le meilleurs temps et mettre à jour les listes
     public void StopRecording()
     {
         recording = false;
@@ -72,6 +75,7 @@ public class RecordManager : MonoBehaviour {
         }
     }
 
+	// Instanciation du fantôme et initialisation en fonction du mode Replay ou Fantôme
     public void Prepare(bool reading)
     {
         currentFrame = 0;
