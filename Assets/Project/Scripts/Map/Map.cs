@@ -47,6 +47,7 @@ public class Map {
 
     #region Generic;
 
+    // map initialization
     public void Initialize()
     {
         cells = CreateCells(maxX, maxZ);
@@ -54,6 +55,7 @@ public class Map {
         cameras = new Dictionary<int[], string>();
     }
 
+    // update elevation metrics for the next elevations generation
     public void UpdateMap(
         int minX,
         int maxX,
@@ -85,6 +87,8 @@ public class Map {
         this.elevationsMinGapFactor = elevationsMinGapFactor;
     }
 
+
+    // cells matrice initialization
     public Cell[,] CreateCells (int width, int height) {
 		Cell[,] res = new Cell[width, height];
 		for (int i = 0; i < res.GetLength (0); i++) {
@@ -96,6 +100,7 @@ public class Map {
 		return res;
 	}
 
+    // return a matrice of float to generate the Unity Terrain heights
 	public float[,] GetHeights() {
 		float[,] res = new float[cells.GetLength (0), cells.GetLength (1)];
 		for (int i = 0; i < res.GetLength (0); i++) {
@@ -106,6 +111,7 @@ public class Map {
 		return res;
 	}
 
+    // return a triple matrice of float to set the Unity Terrain textures
     public float[,,] GetTextures()
     {
         float[,,] res = new float[cells.GetLength(0), cells.GetLength(1), Texture.NUMBER];
@@ -123,6 +129,7 @@ public class Map {
         return res;
     }
 
+    // return a matrice of boolean to place the trees
     public bool[,] GetTrees()
     {
         bool[,] res = new bool[cells.GetLength(0), cells.GetLength(1)];
@@ -160,7 +167,8 @@ public class Map {
     #region Generation;
 
     #region Main;
-
+    
+    // call the generation steps
     public void Generate()
     {
         GenerateRoad();
@@ -171,6 +179,7 @@ public class Map {
         GenerateMap();
     }
 
+    // basic noise on the map (wide elevations)
     private void GenerateBaseElevations()
     {
         UpdateMap(
@@ -183,6 +192,7 @@ public class Map {
         GenerateUpdate();
     }
 
+    // center big elevations
     private void GenerateMainElevations()
     {
         int maxRadius = 20;
@@ -309,9 +319,12 @@ public class Map {
 
     #region Road;
 
+    // road generation pilot
     private void GenerateRoad() {
         IList<int[]> coords = new List<int[]>();
         Direction[] directions = new Direction[] { Direction.East, Direction.North, Direction.West, Direction.South };
+
+        // for each direction (North, South, East, West)
         for (int i = 0; i < directions.Length; i++)
         {
             int turning = Resources.RandInt(minTurnings, maxTurnings + 1),
@@ -321,6 +334,8 @@ public class Map {
                 coords.Add(new int[] { borders + maxTurnings + bordersNoise * 2 + 20, borders });
                 coords = Straight(coords, Direction.East, 20, false);
             }
+
+            // avalaible length calculation for the direction section
             switch (directions[i])
             {
                 case Direction.East: length = cells.GetLength(0) - coords[coords.Count - 1][0] - borders - turning - Resources.RandInt(0, bordersNoise + 1); break;
@@ -328,9 +343,11 @@ public class Map {
                 case Direction.North: length = cells.GetLength(1) - coords[coords.Count - 1][1] - borders - turning - Resources.RandInt(0, bordersNoise + 1); break;
                 default: length = coords[coords.Count - 1][1] - coords[0][1] - turning; break;
             }
-            int sectionsCount = 1;//
+            int sectionsCount = 1; // modular but blocked at 1 section (evolution possible)
             for (int j = 0; j < sectionsCount; j++)
             {
+                // we chose the type of the next section (zigzag, generic)
+
                 if (i > 0 && zigZag < maxZigZag && ((directions.Length - i <= minZigZag - zigZag) || Resources.RandInt(0, 2) == 0))
                 {
                     zigZag++;
@@ -340,11 +357,14 @@ public class Map {
             }
             coords = Turning(coords, Direction.None, directions[i], directions[(i + 1) % directions.Length], turning, true);
         }
+
+        // at the end, link to the start
         coords = LinkPoints(coords, coords[0][0], coords[0][1], coords[coords.Count - 1][0], coords[coords.Count - 1][1]);
         foreach (int[] current in coords)
 			PlaceRoad (current [0], current [1], roadRange);
 	}
 
+    // generate a turning
     private IList<int[]> Turning(IList<int[]> coords, Direction direction, Direction direction1, Direction direction2, int length, bool checkpoint)
     {
         length = length * 7 / 5;//
@@ -417,6 +437,7 @@ public class Map {
         return coords;
     }
 
+    // generate a straight line
     private IList<int[]> Straight (IList<int[]> coords, Direction direction, int length, bool camera)
     {
         int x = coords[coords.Count - 1][0],
@@ -436,6 +457,7 @@ public class Map {
         return coords;
     }
 
+    // generate a zigzag (succession of turnings)
     private IList<int[]> ZigZag (IList<int[]> coords, Direction direction, int number, int length)
     {
         length = (int)(length * 5.7f / 5);//
@@ -479,6 +501,7 @@ public class Map {
         return coords;
     }
 
+    // generate a generic road (straight with a lot of noise)
     private IList<int[]> Generic(IList<int[]> coords, Direction direction, int length, int amplitude)
     {
         int x = coords[coords.Count - 1][0],
@@ -511,6 +534,7 @@ public class Map {
         return coords;
     }
 
+    // link two points with a road
     private IList<int[]> LinkPoints(IList<int[]> coords, int x1, int y1, int x2, int y2)
     {
         while (x1 != x2 || y1 != y2)
@@ -524,6 +548,7 @@ public class Map {
         return coords;
     }
 
+    // place a range of road cells
     private void PlaceRoad (int x, int y, int range) {
 		for (int i = Mathf.Max (0, x - range); i < Mathf.Min (cells.GetLength (0) - 1, x + range + 1); i++) {
 			for (int j = Mathf.Max (0, y - range); j < Mathf.Min (cells.GetLength (1) - 1, y + range + 1); j++) {
@@ -536,6 +561,7 @@ public class Map {
 
     #region Mapping;
 
+    // wrap up map generation
     private void GenerateMap () {
 		float[,] heights = GetHeights ();
 		for (int i = 0; i < cells.GetLength (0); i++) {
@@ -548,6 +574,7 @@ public class Map {
         GenerateTrees();
 	}
 
+    // generate the start/finish line
     private void GenerateStart()
     {
         cameras.Add(new int[] { borders + maxTurnings + bordersNoise * 2 + 30, borders - roadRange - 5 }, "generic");
@@ -562,6 +589,7 @@ public class Map {
         
     }
 
+    // dig the road where there are road cells and put ground textures on the borders
 	private void DigRoad (int x, int y, float[,] heights)
     {
         for (int i = Mathf.Max(0, x - digRange); i < Mathf.Min(cells.GetLength(0) - 1, x + digRange); i++) {
@@ -587,6 +615,7 @@ public class Map {
 		}
 	}
 
+    // chance to place a tree where there is grass
     private void GenerateTrees()
     {
         for (int i = 0; i < cells.GetLength(0); i++)
