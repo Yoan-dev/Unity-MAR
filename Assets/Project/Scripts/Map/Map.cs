@@ -100,7 +100,7 @@ public class Map {
 		float[,] res = new float[cells.GetLength (0), cells.GetLength (1)];
 		for (int i = 0; i < res.GetLength (0); i++) {
 			for (int j = 0; j < res.GetLength (1); j++) {
-				res [i, /*res.GetLength(1) - 1 -*/ j] = cells [i, j].Height;
+				res [i, j] = cells [i, j].Height;
 			}
 		}
 		return res;
@@ -115,8 +115,8 @@ public class Map {
             {
                 for (int k = 0; k < res.GetLength(2); k++)
                 {
-                    if (cells[i, j].Texture == k) res[i, /*res.GetLength(1) - 1 -*/ j, k] = 1.0f;
-                    else res[i, /*res.GetLength(1) - 1 -*/ j, k] = 0;
+                    if (cells[i, j].Texture == k) res[i, j, k] = 1.0f;
+                    else res[i, j, k] = 0;
                 }
             }
         }
@@ -130,7 +130,7 @@ public class Map {
         {
             for (int j = 0; j < res.GetLength(1); j++)
             {
-                res[i, /*res.GetLength(1) - 1 -*/ j] = cells[i, j].Tree;
+                res[i, j] = cells[i, j].Tree;
             }
         }
         return res;
@@ -210,6 +210,7 @@ public class Map {
 		GenerateElevationsHeights ();
 	}
 
+	// Génère les entités montagnes
 	private void GenerateElevationsObjects() {
 
 		for (int i = 0; i < Resources.RandInt (minElevations, maxElevations); i++) {
@@ -224,7 +225,7 @@ public class Map {
 				r = Resources.RandInt (minElevationRadius, maxElevationRadius);
                 float minDist = r * elevationsMinGapFactor;
 
-				// Verification proximite avec montagnes precedentes
+				// Vérification proximité avec montagnes précédentes
 				foreach (Elevation current in elevations) {
 					float dist = Distance (x, z, current.X, current.Y);
                     if (dist >= minDist)
@@ -238,6 +239,7 @@ public class Map {
 				fail++;
 			} while (!ok && fail < failLimit);
 
+			// Si tout est ok, on ajoute la montagnes à la liste
 			if (ok)
             {
                 Elevation elevation = new Elevation();
@@ -255,13 +257,11 @@ public class Map {
 		float[,] heights = GetHeights ();
 		foreach (Elevation elevation in elevations) {
 			float[] coeffX;
-			//int[] minBaseXArray = {0, minX, elevation.X - elevation.Radius};
-			//int[] maxBaseXArray = { cells.GetLength (0) - 1, maxX - 1, elevation.X + elevation.Radius };
 			int minBaseX = Mathf.Max (0, Mathf.Min (minX, elevation.X - elevation.Radius));
 			int maxBaseX = Mathf.Min (cells.GetLength (0) - 1, Mathf.Max (maxX - 1, elevation.X + elevation.Radius));
 			coeffX = CalculationPolynom (elevation.X - elevation.Radius, elevation.X + elevation.Radius, elevation.X, heights [elevation.X, elevation.Y] + elevation.Height);
-			// Mise a jour dans la matrice res de la base de la montagne sur le sol
-			for (int baseX = minBaseX /*Mathf.Max (minX, (elevation.X - elevation.Radius))*/; baseX <= maxBaseX /*Mathf.Min (maxX - 1, (elevation.X + elevation.Radius))*/; baseX++) {
+			// Calcul pour générer les pentes de montagnes
+			for (int baseX = minBaseX; baseX <= maxBaseX; baseX++) {
 				int[] solutionZ = {-1,-1};
 				bool firstTime = true;
 				for (int baseZ = elevation.Y - elevation.Radius; baseZ <= elevation.Y + elevation.Radius; baseZ++) {
@@ -274,11 +274,9 @@ public class Map {
 						}
 					}
 				}
-				//int[] minBaseZArray = { 0, minZ, elevation.Y - elevation.Radius };
-				//int[] maxBaseZArray = { cells.GetLength (1) - 1, maxZ - 1, elevation.Y + elevation.Radius };
 				int minBaseZ = Mathf.Max (0, Mathf.Min(minZ, elevation.Y - elevation.Radius));
 				int maxBaseZ = Mathf.Min (cells.GetLength (1) - 1, Mathf.Max (maxZ - 1, elevation.Y + elevation.Radius));
-				for (int baseZ = minBaseZ /*Mathf.Max (minZ, (elevation.Y - elevation.Radius))*/; baseZ <= maxBaseZ /*Mathf.Min (maxZ - 1, (elevation.Y + elevation.Radius))*/; baseZ++) {
+				for (int baseZ = minBaseZ; baseZ <= maxBaseZ; baseZ++) {
 					if (Distance (baseX, baseZ, elevation.X, elevation.Y) <= elevation.Radius) {
 						float[] coeffZ;
 						coeffZ = CalculationPolynom (solutionZ [0], solutionZ [1], elevation.Y, DrawPolynom (coeffX [0], coeffX [1], coeffX [2], baseX));

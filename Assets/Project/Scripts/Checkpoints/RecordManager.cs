@@ -28,6 +28,7 @@ public class RecordManager : MonoBehaviour {
 	}
 	
 	void Update () {
+		// Si l'enregistrement est en cours on stocke les positions dans la liste 'replay'
         if (recording)
         {
             float time = Time.time;
