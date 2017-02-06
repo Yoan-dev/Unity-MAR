@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Elevation {
+﻿public class Elevation {
 
 	private int x;
 	private int y;

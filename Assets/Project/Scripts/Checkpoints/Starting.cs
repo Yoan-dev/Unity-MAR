@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+// start/finish checkpoint
 public class Starting : AbstractCheckpoint
 {
     private bool started = false;
@@ -38,6 +36,9 @@ public class Starting : AbstractCheckpoint
 
     #endregion Accessors;
 
+    // if the checkpoint is triggered and valid
+    // will trigger the end of the turn
+    // then we werify if the race is finished
     public override void CheckpointSuccess(GameObject player)
     {
         position = player.transform.position;

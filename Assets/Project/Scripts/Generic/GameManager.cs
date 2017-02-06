@@ -144,6 +144,7 @@ public class GameManager : MonoBehaviour {
         SceneManager.LoadScene("Game");
     }
 
+    // Coroutine for decount at the start (3, 2, 1, START !)
     IEnumerator Counts()
     {
         GameObject.Find("Timer").GetComponent<UnityEngine.UI.Text>().text = "0min0sec";

@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+// Manage the replay
 public class ReplayCamerasManager : MonoBehaviour {
 
     private IList<IReplayCamera> cameras;
@@ -33,8 +33,10 @@ public class ReplayCamerasManager : MonoBehaviour {
 	
 	void Update ()
     {
-        //if (Input.GetKeyDown(KeyCode.R)) Activate();
         if (!activated) return;
+
+        // if no replay camera is enabled
+        // activate the camera on the replay car (looking from toward the car)
         if (current == null && GameObject.Find("ReplayStockcarCamera") != null)
         {
             GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = true;
@@ -66,6 +68,7 @@ public class ReplayCamerasManager : MonoBehaviour {
         current = null;
     }
 
+    // switch the replay camera
     public void ChangeActiveCamera(IReplayCamera camera)
     {
         GameObject.Find("ReplayStockcarCamera").GetComponent<UnityEngine.Camera>().enabled = false;

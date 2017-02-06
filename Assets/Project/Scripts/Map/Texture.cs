@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Texture {
+﻿public class Texture {
 
     public const int NUMBER = 5;
 
